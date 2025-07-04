@@ -18,6 +18,9 @@ import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.LiveJobRemote
 
 import uk.co.timesheets24.app.timesheetssandbox.Models.ReceivedTimeSheet
 import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.DashboardRemote
+import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.JobTimeStatusRemote
+import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.PermissionRemote
+import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.ProfileRemote
 import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.RecentEntryRemote
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntry
 
@@ -29,11 +32,19 @@ class RefreshLocalData (context: Context) : IRefreshLocalData {
 
     override suspend fun DoWork() : Boolean {
         // body
-        GlobalLookUp.token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQ3YWU0OWM0YzlkM2ViODVhNTI1NDA3MmMzMGQyZThlNzY2MWVmZTEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdHMyNC0zODE5MCIsImF1ZCI6InRzMjQtMzgxOTAiLCJhdXRoX3RpbWUiOjE3NTE2MTQ1NjQsInVzZXJfaWQiOiJiemZ6Q0FieEFpZG93RXB6UFRXMjBVN0FXc3cyIiwic3ViIjoiYnpmekNBYnhBaWRvd0VwelBUVzIwVTdBV3N3MiIsImlhdCI6MTc1MTYxNDU2NCwiZXhwIjoxNzUxNjE4MTY0LCJlbWFpbCI6Im1pa2UuZmVlbHlAb3V0bG9vay5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWlrZS5mZWVseUBvdXRsb29rLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.fqa9_7SGI3xCjsbB9Y-XAIQ6yzkRB1y2orVJJMpb0k4T8BSuSsE-Su1pRtDSx2kLIPZQjnxl3PxZ9Jr_n8smo4qaaI7CdTBzaIPfgrtCH1Nm2LQr9EqPTo4MbuluT13xLqbcRKGGOj8eptAPNL4945m1z26bhQRwfiIbcUooCzduaX64Kru69cvk6LR57GSOPov7Vggx7KimmerarffsHLRYjObuCZRRCeDis66g9skWlyEl5Uvnlg9zGvfpT450xRynrviyfB38jFGrOx3UBJYKFr8gNALsD6m6nPC2om_VSSaxMqVDRv8YhpKB6UrEqIdF0-nHbfB8z66Zf_ePkA"
+        GlobalLookUp.token = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg3NzQ4NTAwMmYwNWJlMDI2N2VmNDU5ZjViNTEzNTMzYjVjNThjMTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdHMyNC0zODE5MCIsImF1ZCI6InRzMjQtMzgxOTAiLCJhdXRoX3RpbWUiOjE3NTE2MzI1NzUsInVzZXJfaWQiOiJiemZ6Q0FieEFpZG93RXB6UFRXMjBVN0FXc3cyIiwic3ViIjoiYnpmekNBYnhBaWRvd0VwelBUVzIwVTdBV3N3MiIsImlhdCI6MTc1MTYzMjU3NSwiZXhwIjoxNzUxNjM2MTc1LCJlbWFpbCI6Im1pa2UuZmVlbHlAb3V0bG9vay5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWlrZS5mZWVseUBvdXRsb29rLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.3cG1fRNwlD8rZHJZAUSIwC3setF8QCBB7joU6fIrmcyE7sXN5iMEdP--pR7eKSi4atiJPPeW7Em6mUq1EZAz23iedB_xKsGqqJJlk3z2z_HdNOouUZ4RKNlaXtwyb1YqFD7zyHV6d-YHptVg17dEovY1CQlbkGxSvsSTXyYd8hmHb52LWw-V4_qZK49M8cS2DGKOgY6rP_9a5rkaz0DniAPhX81gopOXH5-BsXBVLTIzyfajkdETs1uXYgMjXvuDk9vBhECf5Vj7jcu3vYe1S2Kqdade8ilhLGZLDfdXglwbgF3bCUpJ8GpmFpffj2LTwaQhnYtjB7m18thBH0br-w"
 
         RefreshLiveJobs()
 
         RefreshRecentEntries()
+
+        //RefreshDashboard()
+
+        RefreshJobTimeStatus()
+
+        RefreshUser()
+
+        RefreshRecentPermissions()
 
         return false
     }
@@ -76,17 +87,66 @@ class RefreshLocalData (context: Context) : IRefreshLocalData {
         return false;
     }
 
-    fun RefJobStatus(): Boolean {
-        TODO("Not yet implemented")
+    suspend fun RefreshJobTimeStatus(): Boolean {
+        val jobTimeStatusList = Jobs.getJobTimeStatus("Bearer ${GlobalLookUp.token}")
+        val jobTimeStatusDao = localDBConnection.jobTimeStatusDao()
+        jobTimeStatusDao.clear();
+        jobTimeStatusList.forEach{entry ->
+            jobTimeStatusDao.insert(convertService.convertToLocalJobStatus(entry))
+        }
+        if (jobTimeStatusDao.fetch().size == jobTimeStatusList.size){
+            return true;
+        }
+        return false;
     }
 
     fun CheckDeviceId(): Boolean {
         TODO("Not yet implemented")
     }
 
-    fun RefreshUser(): Boolean {
-        TODO("Not yet implemented")
+    suspend fun RefreshUser(): Boolean {
+        val profileData = Profileapi.details("Bearer ${GlobalLookUp.token}")
+        val profileDao = localDBConnection.profileDao()
+        profileDao.insert(convertService.convertToLocalProfile(profileData))
+        if (profileDao.fetch().id == profileData.id){
+            return true;
+        }
+        return false;
     }
+
+    suspend fun RefreshRecentPermissions(): Boolean {
+        val permissionList = Profileapi.permissions(("Bearer ${GlobalLookUp.token}"))
+        val permissionDao = localDBConnection.permissionDao()
+
+        permissionDao.clear();
+        permissionList.forEach{entry ->
+            permissionDao.insert(convertService.convertToLocalPermission(entry))
+        }
+        if (permissionDao.fetch().size == permissionList.size){
+            return true;
+        }
+        return false;
+    }
+
+
+    val retrofitProfile: Retrofit = Retrofit.Builder()
+        .baseUrl(BuildConfig.PROFILE_URL)
+        .client(GlobalLookUp.getSafeOkHttpClient())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val Profileapi = retrofitProfile.create(ProfileApi::class.java)
+
+    interface ProfileApi {
+
+        @GET("Details")
+        suspend fun details(@Header("Authorization") token: String): ProfileRemote
+
+        @GET("Permission")
+        suspend fun permissions(@Header("Authorization") token: String): List<PermissionRemote>
+    }
+
+
 
     val retrofitMIs: Retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.ACCOUNTMI_URL)
@@ -134,6 +194,8 @@ class RefreshLocalData (context: Context) : IRefreshLocalData {
         @GET("jobdetails/{jobId}")
         suspend fun getJobDetails(@Header("Authorization") token : String, @Path("jobId") jobId : String) : LiveJobRemote
 
+        @GET("JobTimeStatus")
+        suspend fun getJobTimeStatus(@Header("Authorization") token : String) : List<JobTimeStatusRemote>
 
     }
 

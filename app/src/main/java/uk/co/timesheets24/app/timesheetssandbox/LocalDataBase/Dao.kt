@@ -5,7 +5,10 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.DashboardLocal
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.JobTimeStatusLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobLocal
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.PermissionLocal
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.ProfileLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.RecentEntryLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntryTable
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetTable
@@ -56,6 +59,47 @@ interface JobsDao {
 
     @Query("DELETE FROM live_jobs")
     suspend fun clear()
+}
+
+@Dao
+interface JobTimeStatusDao {
+
+    @Insert()
+    suspend fun insert(jobTimeStatusLocal: JobTimeStatusLocal)
+
+    @Query("DELETE FROM JobTimeStatus")
+    suspend fun clear()
+
+    @Query("SELECT * FROM JobTimeStatus")
+    suspend fun fetch() : List<JobTimeStatusLocal>
+}
+@Dao
+interface ProfileDao {
+
+    @Insert()
+    suspend fun insert(profileLocal: ProfileLocal)
+
+    @Query("DELETE FROM Profile")
+    suspend fun clear()
+
+    @Query("SELECT * FROM Profile")
+    suspend fun fetch() : ProfileLocal
+
+
+}
+
+@Dao
+interface PermissionDao {
+
+    @Insert()
+    suspend fun insert(permissionLocal: PermissionLocal)
+
+    @Query("DELETE FROM Permission")
+    suspend fun clear()
+
+    @Query("SELECT * FROM Permission")
+    suspend fun fetch() : List<PermissionLocal>
+
 
 }
 
