@@ -26,21 +26,7 @@ data class TimeSheetEntryTable(
 
 
 
-@Entity(tableName = "recent_entries")
-data class RecentEntryTable (
-    @PrimaryKey(autoGenerate = true)
-    val id : Int = 0,
-    val jobNumber : Int,
-    val jobDate : String,
-    val jobGUID : String?,
-    val description : String,
-    val timetake : Int,
-    val travellingTime : Int,
-    val overTime : Int,
-    val timeId : String,
-    val clientName : String?,
-    val tempId : String?
-)
+
 
 @Entity(tableName = "timesheet")
 data class TimeSheetTable (

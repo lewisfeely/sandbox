@@ -1,6 +1,6 @@
 package uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData
 
-data class LiveJob(
+data class LiveJobRemote(
     val poNumber: String?,
     val createdDate: String,
     val description: String,

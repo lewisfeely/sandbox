@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
-import uk.co.timesheets24.app.timesheetssandbox.Models.RecentEntry
+import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.RecentEntryRemote
 import java.io.File
 import java.security.KeyStore
 import java.security.cert.CertificateFactory
@@ -21,7 +21,7 @@ object GlobalLookUp {
 
     var token : String? = null
 
-    var recentEntries : List<RecentEntry>? = null
+    var recentEntries : List<RecentEntryRemote>? = null
 
     fun getUnsafeOkHttpClient(context: Context): OkHttpClient {
         val certificateFactory = CertificateFactory.getInstance("X.509")

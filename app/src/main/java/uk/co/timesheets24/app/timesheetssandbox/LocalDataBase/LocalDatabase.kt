@@ -4,15 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobsTable
-import uk.co.timesheets24.app.timesheetssandbox.Models.RecentEntryTable
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobLocal
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.RecentEntryLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntryTable
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetTable
 import kotlin.jvm.java
 
  @Database(entities = [
-     LiveJobsTable::class,
-     RecentEntryTable::class,
+     LiveJobLocal::class,
+     RecentEntryLocal::class,
      TimeSheetEntryTable::class,
      TimeSheetTable::class],
      version = 1)

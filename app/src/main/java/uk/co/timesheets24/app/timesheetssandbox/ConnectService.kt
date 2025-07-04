@@ -16,10 +16,12 @@ import retrofit2.http.Path
 import uk.co.timesheets24.app.timesheetssandbox.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.timesheetssandbox.Models.AuthResponse
 import uk.co.timesheets24.app.timesheetssandbox.Models.EditingTimeSheet
-import uk.co.timesheets24.app.timesheetssandbox.Models.LiveJob
-import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobsTable
+
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.ReceivedTimeSheet
-import uk.co.timesheets24.app.timesheetssandbox.Models.RecentEntry
+
+import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.LiveJobRemote
+import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.RecentEntryRemote
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntry
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntryTable
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetTable
@@ -84,7 +86,7 @@ class ConnectService(context: Context, workerParams: WorkerParameters) : Corouti
     interface JobsApi {
 
         @GET("recententries")
-        suspend fun recentEntries(@Header("Authorization") token : String) : List<RecentEntry>
+        suspend fun recentEntries(@Header("Authorization") token : String) : List<RecentEntryRemote>
 
         @GET("timesheets/{tsId}")
         suspend fun getJob(@Header("Authorization") token : String, @Path("tsId") tsId : String) : ReceivedTimeSheet
@@ -95,14 +97,14 @@ class ConnectService(context: Context, workerParams: WorkerParameters) : Corouti
         @DELETE("timesheets/{tsId}")
         suspend fun deleteTimesheet(@Header("Authorization") token : String, @Path("tsId") tsId : String)
 
-        @GET("livejobs")
-        suspend fun getJobs(@Header("Authorization") token : String) : List<LiveJob>
+       // @GET("livejobs")
+       // suspend fun getJobs(@Header("Authorization") token : String) : List<LiveJob>
 
         @POST("timesheets")
         suspend fun postTimesheet(@Header("Authorization") token : String, @Body body : TimeSheetEntry)
 
-        @GET("jobdetails/{jobId}")
-        suspend fun getJobDetails(@Header("Authorization") token : String, @Path("jobId") jobId : String) : LiveJob
+      //  @GET("jobdetails/{jobId}")
+      //  suspend fun getJobDetails(@Header("Authorization") token : String, @Path("jobId") jobId : String) : LiveJob
 
 
     }
@@ -438,8 +440,8 @@ fun toTimeSheetEntry(entryTable: TimeSheetEntryTable): TimeSheetEntry {
     )
 }
 
-fun convertToLiveJobsTable(liveJob: LiveJob): LiveJobsTable {
-    return LiveJobsTable(
+fun convertToLiveJobsTable(liveJob: LiveJobRemote): LiveJobLocal {
+    return LiveJobLocal(
         poNumber = liveJob.poNumber.toString(),
         createdDate = liveJob.createdDate,
         description = liveJob.description,
@@ -459,8 +461,8 @@ fun convertToLiveJobsTable(liveJob: LiveJob): LiveJobsTable {
     )
 }
 
-fun convertToLiveJob(entity: LiveJobsTable): LiveJob {
-    return LiveJob(
+fun convertToLiveJob(entity: LiveJobLocal): LiveJobLocal {
+    return LiveJobLocal(
         poNumber = entity.poNumber,
         createdDate = entity.createdDate,
         description = entity.description,
@@ -473,7 +475,7 @@ fun convertToLiveJob(entity: LiveJobsTable): LiveJob {
         clientContactName = entity.clientContactName,
         addressId = entity.addressId,
         customerSite = entity.customerSite,
-        timeTime = entity.timeTime.toFloat(),
+        timeTime = 0,
         travellingTime = entity.travellingTime,
         overtime = entity.overtime,
         readyToClose = entity.readyToClose

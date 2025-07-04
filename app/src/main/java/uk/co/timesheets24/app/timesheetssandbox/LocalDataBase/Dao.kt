@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobsTable
-import uk.co.timesheets24.app.timesheetssandbox.Models.RecentEntryTable
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobLocal
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.RecentEntryLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntryTable
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetTable
 
@@ -33,13 +33,13 @@ import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetTable
 interface JobsDao {
 
     @Insert()
-    suspend fun insert(liveJob: LiveJobsTable)
+    suspend fun insert(liveJob: LiveJobLocal)
 
     @Query("DELETE FROM live_jobs WHERE jobGUID = :jobId")
     suspend fun deleteJobs(jobId : String)
 
     @Query("SELECT * FROM live_jobs")
-    suspend fun fetchJobs() : List<LiveJobsTable>
+    suspend fun fetchJobs() : List<LiveJobLocal>
 
     @Query("DELETE FROM live_jobs")
     suspend fun clear()
@@ -50,10 +50,10 @@ interface JobsDao {
 interface RecentEntries {
 
     @Insert()
-    suspend fun insert(recentEntry : RecentEntryTable)
+    suspend fun insert(recentEntry : RecentEntryLocal)
 
     @Query("SELECT * FROM recent_entries")
-    suspend fun fetchEntries() : List<RecentEntryTable>
+    suspend fun fetchEntries() : List<RecentEntryLocal>
 
     @Query("DELETE FROM recent_entries")
     suspend fun clearEntries()
@@ -62,13 +62,13 @@ interface RecentEntries {
     suspend fun deleteRecentEntry(description : String)
 
     @Query("SELECT * FROM recent_entries WHERE timeId = :timeId")
-    suspend fun fetchById(timeId : String) : RecentEntryTable
+    suspend fun fetchById(timeId : String) : RecentEntryLocal
 
     @Query("SELECT * FROM recent_entries WHERE timeId = :timeId AND description = :description")
-    suspend fun fetchByIdAndDescription(timeId : String, description : String) : RecentEntryTable
+    suspend fun fetchByIdAndDescription(timeId : String, description : String) : RecentEntryLocal
 
     @Update
-    suspend fun editRecentEntry(recentEntry : RecentEntryTable)
+    suspend fun editRecentEntry(recentEntry : RecentEntryLocal)
 
 }
 

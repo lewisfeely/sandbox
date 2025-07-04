@@ -2,17 +2,7 @@ package uk.co.timesheets24.app.timesheetssandbox.Models
 
 
 
-data class RecentEntry (
-    val jobNumber : Int,
-    val jobDate : String,
-    val jobGUID : String?,
-    val description : String,
-    val timetake : Int,
-    val travellingTime : Int,
-    val overTime : Int,
-    val timeId : String,
-    val clientName : String?
-)
+
 
 data class EditingTimeSheet(
     val sessionId: String = "",
