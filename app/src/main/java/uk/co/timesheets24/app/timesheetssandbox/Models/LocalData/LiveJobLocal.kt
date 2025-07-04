@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "live_jobs")
-data class LiveJobsTable(
+data class LiveJobsLocal(
     @field:PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val poNumber: String,
