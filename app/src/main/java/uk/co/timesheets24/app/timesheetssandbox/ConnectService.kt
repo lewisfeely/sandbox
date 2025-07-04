@@ -17,7 +17,7 @@ import uk.co.timesheets24.app.timesheetssandbox.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.timesheetssandbox.Models.AuthResponse
 import uk.co.timesheets24.app.timesheetssandbox.Models.EditingTimeSheet
 import uk.co.timesheets24.app.timesheetssandbox.Models.LiveJob
-import uk.co.timesheets24.app.timesheetssandbox.Models.LiveJobsTable
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobsTable
 import uk.co.timesheets24.app.timesheetssandbox.Models.ReceivedTimeSheet
 import uk.co.timesheets24.app.timesheetssandbox.Models.RecentEntry
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntry

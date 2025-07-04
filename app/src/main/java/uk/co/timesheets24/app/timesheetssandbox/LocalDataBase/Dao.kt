@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import uk.co.timesheets24.app.timesheetssandbox.Models.LiveJobsTable
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobsTable
 import uk.co.timesheets24.app.timesheetssandbox.Models.RecentEntryTable
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntryTable
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetTable

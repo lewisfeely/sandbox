@@ -24,27 +24,7 @@ data class TimeSheetEntryTable(
     val clientName : String?
 )
 
-@Entity(tableName = "live_jobs")
-data class LiveJobsTable(
-    @field:PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val poNumber: String,
-    val createdDate: String,
-    val description: String,
-    val jobDate: String,
-    val jobGUID: String,
-    val jobNumber: String,
-    val clientId: String,
-    val clientName: String,
-    val clientContactId: String,
-    val clientContactName: String,
-    val addressId: String,
-    val customerSite: String,
-    val timeTime: Int,
-    val travellingTime: Int,
-    val overtime: Int,
-    val readyToClose: Boolean
-)
+
 
 @Entity(tableName = "recent_entries")
 data class RecentEntryTable (
