@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.DashboardLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.RecentEntryLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntryTable
@@ -14,14 +15,16 @@ import kotlin.jvm.java
      LiveJobLocal::class,
      RecentEntryLocal::class,
      TimeSheetEntryTable::class,
-     TimeSheetTable::class],
-     version = 1)
+     TimeSheetTable::class,
+     DashboardLocal::class],
+     version = 2)
 abstract class LocalUserDatabase : RoomDatabase() {
 
     abstract fun jobDao() : JobsDao
     abstract fun recentEntriesDao() : RecentEntries
     abstract fun pendingTimeSheetEntries() : PendingEntries
     abstract fun timeSheetDao() : TimeSheetTableDao
+    abstract fun dashboardDao() : DashboardDao
 
 
     companion object {

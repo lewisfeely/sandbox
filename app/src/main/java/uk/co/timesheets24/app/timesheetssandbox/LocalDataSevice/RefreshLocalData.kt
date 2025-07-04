@@ -17,6 +17,7 @@ import uk.co.timesheets24.app.timesheetssandbox.Models.EditingTimeSheet
 import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.LiveJobRemote
 
 import uk.co.timesheets24.app.timesheetssandbox.Models.ReceivedTimeSheet
+import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.DashboardRemote
 import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.RecentEntryRemote
 import uk.co.timesheets24.app.timesheetssandbox.Models.TimeSheetEntry
 
@@ -65,8 +66,14 @@ class RefreshLocalData (context: Context) : IRefreshLocalData {
         return false;
     }
 
-    fun RefreshDashboard(): Boolean {
-        TODO("Not yet implemented")
+    suspend fun RefreshDashboard(): Boolean {
+        val dashboardData = MIapi.dashboard("Bearer ${GlobalLookUp.token}")
+        val dashboardDao = localDBConnection.dashboardDao()
+        dashboardDao.insert(convertService.convertToLocalDashboard(dashboardData))
+        if (dashboardDao.fetch().Timetake == dashboardData.Timetake){
+            return true;
+        }
+        return false;
     }
 
     fun RefJobStatus(): Boolean {
@@ -81,6 +88,20 @@ class RefreshLocalData (context: Context) : IRefreshLocalData {
         TODO("Not yet implemented")
     }
 
+    val retrofitMIs: Retrofit = Retrofit.Builder()
+        .baseUrl(BuildConfig.ACCOUNTMI_URL)
+        .client(GlobalLookUp.getSafeOkHttpClient())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val MIapi = retrofitMIs.create(AccountMiApi::class.java)
+
+    interface AccountMiApi {
+
+        @GET("Contact")
+        suspend fun dashboard(@Header("Authorization") token: String): DashboardRemote
+    }
+
     val retrofitJobs: Retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.JOBS_URL)
         .client(GlobalLookUp.getSafeOkHttpClient())
@@ -88,6 +109,7 @@ class RefreshLocalData (context: Context) : IRefreshLocalData {
         .build()
 
     val Jobs = retrofitJobs.create(JobsApi::class.java)
+
 
     interface JobsApi {
 

@@ -1,7 +1,9 @@
 package uk.co.timesheets24.app.timesheetssandbox.Models.Conversion
 
+import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.DashboardLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.LiveJobLocal
 import uk.co.timesheets24.app.timesheetssandbox.Models.LocalData.RecentEntryLocal
+import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.DashboardRemote
 import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.LiveJobRemote
 import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.RecentEntryRemote
 
@@ -43,5 +45,15 @@ class ConvertToLocalData {
         )
     }
 
-}
+    fun convertToLocalDashboard(dashboard:DashboardRemote) : DashboardLocal {
+        return DashboardLocal(
+            contactId = dashboard.contactId,
+            greetingName = dashboard.greetingName,
+            overtime = dashboard.overtime,
+            Timetake = dashboard.Timetake,
+            travellingTime = dashboard.travellingTime,
+            availableTime = dashboard.availableTime,
+        )
+    }
 
+}
