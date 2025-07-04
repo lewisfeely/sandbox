@@ -37,7 +37,6 @@ class SandboxMainView : ComponentActivity() {
         setContent {
             val context : Context = this
             val viewModel : SandboxMainViewModel = viewModel()
-
             SyncScreen(viewModel, context)
         }
     }
@@ -52,6 +51,7 @@ fun SyncScreen(viewModel: SandboxMainViewModel, context: Context) {
             CircularProgressIndicator()
         } else {
             Button(onClick = {
+                viewModel.loading.value = true
                 viewModel.error.value = false
                 viewModel.login(context)
             }) {

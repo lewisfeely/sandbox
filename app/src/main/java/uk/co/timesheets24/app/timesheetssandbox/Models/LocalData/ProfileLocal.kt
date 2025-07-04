@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Profile")
 data class ProfileLocal(
-    @field:PrimaryKey
+    @PrimaryKey(autoGenerate = false)
     val id: String,
     val title : String?,
     var firstname: String?,

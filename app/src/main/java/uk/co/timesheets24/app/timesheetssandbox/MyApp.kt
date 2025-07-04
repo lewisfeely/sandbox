@@ -9,6 +9,7 @@ import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import uk.co.timesheets24.app.timesheetssandbox.Models.RemoteData.RecentEntryRemote
 import java.io.File
+import java.io.InputStream
 import java.security.KeyStore
 import java.security.cert.CertificateFactory
 import javax.net.ssl.SSLContext
@@ -20,7 +21,6 @@ import kotlin.collections.first
 object GlobalLookUp {
 
     var token : String? = null
-
     var recentEntries : List<RecentEntryRemote>? = null
 
     fun getUnsafeOkHttpClient(context: Context): OkHttpClient {
@@ -48,7 +48,7 @@ object GlobalLookUp {
         val sslContext = SSLContext.getInstance("TLS")
         sslContext.init(null, arrayOf(trustManager), null)
 
-         return OkHttpClient.Builder()
+        return OkHttpClient.Builder()
             .sslSocketFactory(sslContext.socketFactory, trustManager)
             .hostnameVerifier { hostname, _ -> hostname == "10.0.2.2" }
             .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS))

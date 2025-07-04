@@ -57,6 +57,11 @@ data class TimeSheetEntry(
     val travellingTime: Int
 )
 
+data class DashboardRequest(
+ val timeSheetJobdateFrom: String,
+ val timeSheetJobdateTo: String
+)
+
 data class AuthResponse (
     val refresh_token : String,
     val token_type: String,

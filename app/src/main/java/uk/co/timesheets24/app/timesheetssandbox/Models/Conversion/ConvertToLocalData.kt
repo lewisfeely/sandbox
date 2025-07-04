@@ -36,7 +36,7 @@ class ConvertToLocalData {
         )
     }
 
-    fun convertToLocalRecentEntry(recentEntry: RecentEntryRemote) : RecentEntryLocal {
+    fun convertToLocalRecentEntry(recentEntry : RecentEntryRemote) : RecentEntryLocal {
         return RecentEntryLocal (
             jobNumber = recentEntry.jobNumber,
             jobDate = recentEntry.jobDate,
