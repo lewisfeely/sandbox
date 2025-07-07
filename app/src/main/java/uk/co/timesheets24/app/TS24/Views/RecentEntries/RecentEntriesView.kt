@@ -96,232 +96,350 @@ fun RecentEntriesScreen() {
     val context: Context = LocalContext.current
     val viewModel : RecentEntriesViewModel = viewModel()
 
-    val selectedTimeId = remember { mutableIntStateOf(0) }
-
-
     LaunchedEffect(Unit) {
-        if (!viewModel.recentEntriesList.isNotEmpty() && !viewModel.isLoading.value) {
+        if (!viewModel.recentEntriesList.isNotEmpty() && !viewModel.loading.value) {
             viewModel.fetchRecentEntries(context)
         }
     }
 
 
-        Column(
+    Column(
             modifier = Modifier.fillMaxSize().background(TSDarkBlue).padding(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(20.dp))
-            if (viewModel.loaded.value) {
-                if (viewModel.recentEntriesList.isNotEmpty()) {
-
+            if (viewModel.loading.value ) {
+                CircularProgressIndicator(color = Color.White)
+                Text("loading items...", color = Color.White)
+            }
+            else
+            {
+                if (viewModel.recentEntriesList.isEmpty()) {
+                    Text("No recent entries to display", color = Color.White)
+                }
+                else
+                {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth().height(700.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        items(viewModel.recentEntriesList.size) { index ->
+                            Column {
+                                val recentEntry = viewModel.recentEntriesList[index]
+                            }
 
-                        items(viewModel.recentEntriesList.size) { job ->
-                            val dismissState = rememberDismissState(
-                                confirmStateChange = {
-                                    if (it == DismissValue.DismissedToStart) {
-                                        selectedTimeId.intValue = job
-                                        viewModel.dialog.value = true
-                                    }
-                                    true
-                                }
-                            )
-
-                            SwipeToDismiss(
-                                state = dismissState,
-                                background = {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .background(Color.Red)
-                                            .padding(20.dp),
-                                        contentAlignment = Alignment.CenterEnd
-                                    ) {
-                                        Text("Delete", color = Color.White)
-                                    }
-                                },
-                                directions = setOf(DismissDirection.EndToStart), // Swipe right-to-left
-                                dismissContent = {
-                                    Spacer(modifier = Modifier.height(20.dp))
-                                    Column {
-                                        Row(
-                                            Modifier.background(Color(0XFF1e293b))
-                                                .fillMaxWidth()
-                                                .height(100.dp)
-                                                .clickable(onClick = {
-                                                    if (GlobalLookUp.hasInternetAccess(context)) {
-                                                        viewModel._jobEditing.value =
-                                                            viewModel.recentEntriesList[job].timeId
-                                                    } else {
-                                                        viewModel._jobEditing.value =
-                                                            viewModel.recentEntriesList[job].description
-
-                                                    }
-                                                    viewModel._timeSheetId.intValue = job
-                                                    viewModel.loading.value = false
-                                                    viewModel.selectedJob(context)
-                                                }),
-                                            verticalAlignment = Alignment.Top,
-                                            horizontalArrangement = Arrangement.Start
-                                        ) {
-                                            Column {
-                                                Box(
-                                                    Modifier.width(350.dp)
-                                                        .height(50.dp)
-
-                                                ) {
-                                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                                        Box(
-                                                            modifier = Modifier
-                                                                .size(50.dp),
-                                                            contentAlignment = Alignment.Center
-                                                        ) {
-                                                            Text(
-                                                                text = "${viewModel.recentEntriesList[job].jobNumber}",
-                                                                color = Color.White
-                                                            )
-                                                        }
-                                                        Spacer(Modifier.width(10.dp))
-                                                        Text(
-                                                            viewModel.recentEntriesList[job].clientName
-                                                                ?: "no client Name",
-                                                            color = Color.White,
-                                                            fontSize = 16.sp
-                                                        )
-                                                        Spacer(Modifier.width(30.dp))
-                                                        if (viewModel.recentEntriesList[job].timeId == "") {
-                                                            Box(Modifier.background(color = Color.Red, shape = CircleShape).size(10.dp)) {}
-                                                        }
-                                                    }
-
-                                                }
-
-                                                Row(
-                                                    Modifier.width(350.dp).height(50.dp),
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.SpaceAround
-                                                ) {
-                                                    Text(
-                                                        viewModel.recentEntriesList[job].description,
-                                                        color = Color.White,
-                                                        modifier = Modifier.width(150.dp),
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis,
-                                                    )
-                                                    Box(Modifier.height(50.dp).width(80.dp)) {
-                                                        Column(Modifier.height(50.dp)) {
-                                                            Text(
-                                                                "duration : ${viewModel.recentEntriesList[job].timetake / 60} hrs",
-                                                                fontSize = 10.sp,
-                                                                modifier = Modifier.height(16.dp)
-                                                            )
-                                                            Text(
-                                                                "travel : ${viewModel.recentEntriesList[job].travellingTime / 60} hrs",
-                                                                fontSize = 10.sp,
-                                                                modifier = Modifier.height(16.dp)
-                                                            )
-                                                            Text(
-                                                                "over time : ${viewModel.recentEntriesList[job].overTime / 60}hrs ",
-                                                                fontSize = 10.sp,
-                                                                modifier = Modifier.height(16.dp)
-                                                            )
-                                                        }
-                                                    }
-
-                                                }
-                                            }
-                                            Column(
-                                                verticalArrangement = Arrangement.Center,
-                                                horizontalAlignment = Alignment.CenterHorizontally,
-                                                modifier = Modifier.fillMaxSize()
-                                            ) {
-//                                                Icon(
-//                                                    painter = painterResource(R.drawable.chevronrightsolid),
-//                                                    contentDescription = "Menu",
-//                                                    tint = MaterialTheme.colorScheme.onPrimary,
-//                                                    modifier = Modifier.size(40.dp)
-//                                                )
-                                            }
-
-                                            when (viewModel.dialog.value) {
-                                                true -> {
-                                                    Dialog(onDismissRequest = {}) {
-
-                                                        Column(
-                                                            Modifier
-                                                                .height(200.dp).width(300.dp)
-                                                                .background(color = Color(0XFF1e293b))
-                                                                .border(
-                                                                    width = 2.dp,
-                                                                    color = Color.White
-                                                                ),
-                                                            verticalArrangement = Arrangement.Center,
-                                                            horizontalAlignment = Alignment.CenterHorizontally
-                                                        ) {
-                                                            Text("confirm delete")
-                                                            Row {
-                                                                Button(onClick = {
-                                                                    viewModel.deleteRecentEntry(
-                                                                        context,
-                                                                        viewModel.recentEntriesList[selectedTimeId.intValue].timeId,
-                                                                        viewModel.recentEntriesList[selectedTimeId.intValue].description
-                                                                    )
-                                                                    viewModel._loaded.value = false
-                                                                    viewModel.dialog.value = false
-                                                                }) {
-                                                                    Text("Confirm")
-                                                                }
-                                                                Button(onClick = {
-                                                                    viewModel.recentEntriesList.clear()
-                                                                    viewModel.fetchRecentEntries(
-                                                                        context
-                                                                    )
-                                                                    viewModel._loaded.value = false
-                                                                    viewModel.dialog.value = false
-                                                                }) {
-                                                                    Text("Cancel")
-                                                                }
-
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                false -> {}
-                                            }
-
-//                                            when (GlobalLookUp.jobReturned.value != null) {
-//                                                true -> {
-//                                                    val intent =
-//                                                        Intent(
-//                                                            context,
-//                                                            EditRecentEntryView::class.java
+                            Column {
+//                                        Row(
+//                                            Modifier.background(Color(0XFF1e293b))
+//                                                .fillMaxWidth()
+//                                                .height(100.dp)
+//                                                .clickable(onClick = {
+////                                                    if (GlobalLookUp.hasInternetAccess(context)) {
+////                                                        viewModel._jobEditing.value =
+////                                                            viewModel.recentEntriesList[job].timeId
+////                                                    } else {
+////                                                        viewModel._jobEditing.value =
+////                                                            viewModel.recentEntriesList[job].description
+////
+////                                                    }
+////                                                    viewModel._timeSheetId.intValue = job
+////                                                    viewModel.loading.value = false
+////                                                    viewModel.selectedJob(context)
+//                                                }),
+//                                            verticalAlignment = Alignment.Top,
+//                                            horizontalArrangement = Arrangement.Start
+//                                        ) {
+//                                            Column {
+//                                                Box(
+//                                                    Modifier.width(350.dp)
+//                                                        .height(50.dp)
+//
+//                                                ) {
+//                                                    Row(verticalAlignment = Alignment.CenterVertically) {
+//                                                        Box(
+//                                                            modifier = Modifier
+//                                                                .size(50.dp),
+//                                                            contentAlignment = Alignment.Center
+//                                                        ) {
+//                                                            Text(
+//                                                                text = "${viewModel.recentEntriesList[job].jobNumber}",
+//                                                                color = Color.White
+//                                                            )
+//                                                        }
+//                                                        Spacer(Modifier.width(10.dp))
+//                                                        Text(
+//                                                            viewModel.recentEntriesList[job].clientName
+//                                                                ?: "no client Name",
+//                                                            color = Color.White,
+//                                                            fontSize = 16.sp
 //                                                        )
-//                                                    context.startActivity(intent)
+//                                                        Spacer(Modifier.width(30.dp))
+//                                                        if (viewModel.recentEntriesList[job].timeId == "") {
+//                                                            Box(Modifier.background(color = Color.Red, shape = CircleShape).size(10.dp)) {}
+//                                                        }
+//                                                    }
+//
+//                                                }
+//
+//                                                Row(
+//                                                    Modifier.width(350.dp).height(50.dp),
+//                                                    verticalAlignment = Alignment.CenterVertically,
+//                                                    horizontalArrangement = Arrangement.SpaceAround
+//                                                ) {
+//                                                    Text(
+//                                                        viewModel.recentEntriesList[job].description,
+//                                                        color = Color.White,
+//                                                        modifier = Modifier.width(150.dp),
+//                                                        maxLines = 1,
+//                                                        overflow = TextOverflow.Ellipsis,
+//                                                    )
+//                                                    Box(Modifier.height(50.dp).width(80.dp)) {
+//                                                        Column(Modifier.height(50.dp)) {
+//                                                            Text(
+//                                                                "duration : ${viewModel.recentEntriesList[job].timetake / 60} hrs",
+//                                                                fontSize = 10.sp,
+//                                                                modifier = Modifier.height(16.dp)
+//                                                            )
+//                                                            Text(
+//                                                                "travel : ${viewModel.recentEntriesList[job].travellingTime / 60} hrs",
+//                                                                fontSize = 10.sp,
+//                                                                modifier = Modifier.height(16.dp)
+//                                                            )
+//                                                            Text(
+//                                                                "over time : ${viewModel.recentEntriesList[job].overTime / 60}hrs ",
+//                                                                fontSize = 10.sp,
+//                                                                modifier = Modifier.height(16.dp)
+//                                                            )
+//                                                        }
+//                                                    }
+//
+//                                                }
+//                                            }
+//                                            Column(
+//                                                verticalArrangement = Arrangement.Center,
+//                                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                                modifier = Modifier.fillMaxSize()
+//                                            ) {
+////                                                Icon(
+////                                                    painter = painterResource(R.drawable.chevronrightsolid),
+////                                                    contentDescription = "Menu",
+////                                                    tint = MaterialTheme.colorScheme.onPrimary,
+////                                                    modifier = Modifier.size(40.dp)
+////                                                )
+//                                            }
+
+                        }
+
+                    }
+                }
+
+
+//                else
+//                {
+//                    LazyColumn(
+//                        modifier = Modifier
+//                            .fillMaxWidth().height(700.dp),
+//                        verticalArrangement = Arrangement.spacedBy(12.dp),
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
+//                        items(viewModel.recentEntriesList.size) { job ->
+//                            val dismissState = rememberDismissState(
+//                                confirmStateChange = {
+//                                    if (it == DismissValue.DismissedToStart) {
+//                                        selectedTimeId.intValue = job
+//                                        viewModel.dialog.value = true
+//                                    }
+//                                    true
+//                                }
+//                            )
+//
+//                            SwipeToDismiss(
+//                                state = dismissState,
+//                                background = {
+//                                    Box(
+//                                        modifier = Modifier
+//                                            .fillMaxSize()
+//                                            .background(Color.Red)
+//                                            .padding(20.dp),
+//                                        contentAlignment = Alignment.CenterEnd
+//                                    ) {
+//                                        Text("Delete", color = Color.White)
+//                                    }
+//                                },
+//                                directions = setOf(DismissDirection.EndToStart), // Swipe right-to-left
+//                                dismissContent = {
+//                                    Spacer(modifier = Modifier.height(20.dp))
+//                                    Column {
+//                                        Row(
+//                                            Modifier.background(Color(0XFF1e293b))
+//                                                .fillMaxWidth()
+//                                                .height(100.dp)
+//                                                .clickable(onClick = {
+////                                                    if (GlobalLookUp.hasInternetAccess(context)) {
+////                                                        viewModel._jobEditing.value =
+////                                                            viewModel.recentEntriesList[job].timeId
+////                                                    } else {
+////                                                        viewModel._jobEditing.value =
+////                                                            viewModel.recentEntriesList[job].description
+////
+////                                                    }
+////                                                    viewModel._timeSheetId.intValue = job
+////                                                    viewModel.loading.value = false
+////                                                    viewModel.selectedJob(context)
+//                                                }),
+//                                            verticalAlignment = Alignment.Top,
+//                                            horizontalArrangement = Arrangement.Start
+//                                        ) {
+//                                            Column {
+//                                                Box(
+//                                                    Modifier.width(350.dp)
+//                                                        .height(50.dp)
+//
+//                                                ) {
+//                                                    Row(verticalAlignment = Alignment.CenterVertically) {
+//                                                        Box(
+//                                                            modifier = Modifier
+//                                                                .size(50.dp),
+//                                                            contentAlignment = Alignment.Center
+//                                                        ) {
+//                                                            Text(
+//                                                                text = "${viewModel.recentEntriesList[job].jobNumber}",
+//                                                                color = Color.White
+//                                                            )
+//                                                        }
+//                                                        Spacer(Modifier.width(10.dp))
+//                                                        Text(
+//                                                            viewModel.recentEntriesList[job].clientName
+//                                                                ?: "no client Name",
+//                                                            color = Color.White,
+//                                                            fontSize = 16.sp
+//                                                        )
+//                                                        Spacer(Modifier.width(30.dp))
+//                                                        if (viewModel.recentEntriesList[job].timeId == "") {
+//                                                            Box(Modifier.background(color = Color.Red, shape = CircleShape).size(10.dp)) {}
+//                                                        }
+//                                                    }
+//
+//                                                }
+//
+//                                                Row(
+//                                                    Modifier.width(350.dp).height(50.dp),
+//                                                    verticalAlignment = Alignment.CenterVertically,
+//                                                    horizontalArrangement = Arrangement.SpaceAround
+//                                                ) {
+//                                                    Text(
+//                                                        viewModel.recentEntriesList[job].description,
+//                                                        color = Color.White,
+//                                                        modifier = Modifier.width(150.dp),
+//                                                        maxLines = 1,
+//                                                        overflow = TextOverflow.Ellipsis,
+//                                                    )
+//                                                    Box(Modifier.height(50.dp).width(80.dp)) {
+//                                                        Column(Modifier.height(50.dp)) {
+//                                                            Text(
+//                                                                "duration : ${viewModel.recentEntriesList[job].timetake / 60} hrs",
+//                                                                fontSize = 10.sp,
+//                                                                modifier = Modifier.height(16.dp)
+//                                                            )
+//                                                            Text(
+//                                                                "travel : ${viewModel.recentEntriesList[job].travellingTime / 60} hrs",
+//                                                                fontSize = 10.sp,
+//                                                                modifier = Modifier.height(16.dp)
+//                                                            )
+//                                                            Text(
+//                                                                "over time : ${viewModel.recentEntriesList[job].overTime / 60}hrs ",
+//                                                                fontSize = 10.sp,
+//                                                                modifier = Modifier.height(16.dp)
+//                                                            )
+//                                                        }
+//                                                    }
+//
+//                                                }
+//                                            }
+//                                            Column(
+//                                                verticalArrangement = Arrangement.Center,
+//                                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                                modifier = Modifier.fillMaxSize()
+//                                            ) {
+////                                                Icon(
+////                                                    painter = painterResource(R.drawable.chevronrightsolid),
+////                                                    contentDescription = "Menu",
+////                                                    tint = MaterialTheme.colorScheme.onPrimary,
+////                                                    modifier = Modifier.size(40.dp)
+////                                                )
+//                                            }
+//
+//                                            when (viewModel.dialog.value) {
+//                                                true -> {
+//                                                    Dialog(onDismissRequest = {}) {
+//
+//                                                        Column(
+//                                                            Modifier
+//                                                                .height(200.dp).width(300.dp)
+//                                                                .background(color = Color(0XFF1e293b))
+//                                                                .border(
+//                                                                    width = 2.dp,
+//                                                                    color = Color.White
+//                                                                ),
+//                                                            verticalArrangement = Arrangement.Center,
+//                                                            horizontalAlignment = Alignment.CenterHorizontally
+//                                                        ) {
+//                                                            Text("confirm delete")
+//                                                            Row {
+//                                                                Button(onClick = {
+////                                                                    viewModel.deleteRecentEntry(
+////                                                                        context,
+////                                                                        viewModel.recentEntriesList[selectedTimeId.intValue].timeId,
+////                                                                        viewModel.recentEntriesList[selectedTimeId.intValue].description
+////                                                                    )
+////                                                                    viewModel._loaded.value = false
+////                                                                    viewModel.dialog.value = false
+//                                                                }) {
+//                                                                    Text("Confirm")
+//                                                                }
+//                                                                Button(onClick = {
+////                                                                    viewModel.recentEntriesList.clear()
+////                                                                    viewModel.fetchRecentEntries(
+////                                                                        context
+////                                                                    )
+////                                                                    viewModel._loaded.value = false
+////                                                                    viewModel.dialog.value = false
+//                                                                }) {
+//                                                                    Text("Cancel")
+//                                                                }
+//
+//                                                            }
+//                                                        }
+//                                                    }
 //                                                }
 //
 //                                                false -> {}
 //                                            }
-                                        }
-                                    }
-
-                                })
-
-                        }
-                    }
-
-                } else if (!viewModel.loaded.value) {
-                    CircularProgressIndicator(color = Color.White)
-                }
-            } else {
-                CircularProgressIndicator(color = Color.White)
-                Text("loading items...", color = Color.White)
+//
+////                                            when (GlobalLookUp.jobReturned.value != null) {
+////                                                true -> {
+////                                                    val intent =
+////                                                        Intent(
+////                                                            context,
+////                                                            EditRecentEntryView::class.java
+////                                                        )
+////                                                    context.startActivity(intent)
+////                                                }
+////
+////                                                false -> {}
+////                                            }
+//                                        }
+//                                    }
+//
+//                                })
+//
+//                        }
+//                    }
+//
+//                }
             }
         }
 //    }

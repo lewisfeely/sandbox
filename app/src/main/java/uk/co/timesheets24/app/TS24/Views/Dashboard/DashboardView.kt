@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material.Button
@@ -63,9 +64,11 @@ import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.PieChartData.Slice
 import com.github.tehras.charts.piechart.animation.simpleChartAnimation
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
+import kotlinx.coroutines.launch
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.R
 import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
+import uk.co.timesheets24.app.TS24.Views.RecentEntries.RecentEntriesScreen
 
 class DashboardView : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,12 +93,12 @@ enum class HomeTabs (
         "Dashboard",
         content = { AuthenticatedUserScreen()}
     ),
-//    Entries(
-//        "\uf15b",
-//        "\uf15b",
-//        "timesheets",
-//        content = { RecentEntriesScreen() },
-//    ),
+    Entries(
+        "\uf15b",
+        "\uf15b",
+        "timesheets",
+        content = { RecentEntriesScreen() },
+    ),
 //    Jobs(
 //        "\uf03a",
 //        "\uf03a",
@@ -145,24 +148,23 @@ fun DashBoardNav() {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            GlobalLookUp.Permissions?.forEach { permission ->
-                                if (permission.permissionID == "77715BE1-4FAA-496E-AF59-F5998FF20804" && permission.permissionDescription == "View account") {
-                                    androidx.compose.material3.Button(
-                                        onClick = {
+
+                            androidx.compose.material3.Button(
+                                onClick = {
 //                                            val intent = Intent(context, ProfileView::class.java)
 //                                            context.startActivity(intent)
-                                        },
-                                        modifier = Modifier.size(80.dp)
-                                    ) {
-                                        Text(
-                                            "\uf007",
-                                            color = Color.White,
-                                            fontSize = 30.sp,
-                                            fontFamily = viewModel.fontAwesomeSolid,
-                                        )
-                                    }
-                                }
+                                },
+                                modifier = Modifier.size(80.dp)
+                            ) {
+                                Text(
+                                    "\uf007",
+                                    color = Color.White,
+                                    fontSize = 30.sp,
+                                    fontFamily = viewModel.fontAwesomeSolid,
+                                )
                             }
+
+
                             if (GlobalLookUp.hasInternetAccess(context)) {
 
                                 IconButton(
@@ -197,14 +199,14 @@ fun DashBoardNav() {
 
                 val entriesLists = HomeTabs.entries.chunked(2)
 
-//                entriesLists[0].forEach { currentTab ->
-//                    TabButton(currentTab, selectedTabIndex.value == currentTab.ordinal) {
-//                        GlobalLookUp.selectedTab = currentTab.ordinal
-//                        scope.launch {
-//                            pagerState.animateScrollToPage(currentTab.ordinal)
-//                        }
-//                    }
-//                }
+                entriesLists[0].forEach { currentTab ->
+                    TabButton(currentTab, selectedTabIndex.value == currentTab.ordinal) {
+                        GlobalLookUp.selectedTab = currentTab.ordinal
+                        scope.launch {
+                            pagerState.animateScrollToPage(currentTab.ordinal)
+                        }
+                    }
+                }
 //                Box(Modifier.size(60.dp).clip(CircleShape).background(color = Color(0XFF5046e4), shape = CircleShape).clickable {
 //                    if (viewModel.permissionsCheck()) {
 //                        viewModel.navigationPopUp.value = true
@@ -220,15 +222,15 @@ fun DashBoardNav() {
 //                        fontFamily = viewModel.fontAwesomeSolid,
 //                    )
 //                }
-//
-//                entriesLists[1].forEach { currentTab ->
-//                    TabButton(currentTab, selectedTabIndex.value == currentTab.ordinal) {
-//                        GlobalLookUp.selectedTab = currentTab.ordinal
-//                        scope.launch {
-//                            pagerState.animateScrollToPage(currentTab.ordinal)
-//                        }
-//                    }
-//                }
+
+                entriesLists[1].forEach { currentTab ->
+                    TabButton(currentTab, selectedTabIndex.value == currentTab.ordinal) {
+                        GlobalLookUp.selectedTab = currentTab.ordinal
+                        scope.launch {
+                            pagerState.animateScrollToPage(currentTab.ordinal)
+                        }
+                    }
+                }
             }
         },
         containerColor = MaterialTheme.colors.background,

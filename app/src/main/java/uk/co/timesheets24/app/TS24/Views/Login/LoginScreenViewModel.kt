@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import uk.co.timesheets24.app.TS24.API.AuthApiClass
 import uk.co.timesheets24.app.TS24.API.ProfileApiClass
 import uk.co.timesheets24.app.TS24.GlobalLookUp
+import uk.co.timesheets24.app.TS24.LocalDataSevice.RefreshLocalData
 import uk.co.timesheets24.app.TS24.Views.Dashboard.DashboardView
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -54,6 +55,10 @@ class LoginScreenViewModel: ViewModel() {
 
                 GlobalLookUp.userState = accountDetails
                 state.value = "navigating..."
+
+                val refreshService = RefreshLocalData(context)
+                refreshService.DoWork()
+
                 val intent = Intent(context, DashboardView::class.java)
                 context.startActivity(intent)
 
