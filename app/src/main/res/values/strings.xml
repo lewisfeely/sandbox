@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TimeSheetsSandbox</string>
+    <string name="app_name">TS24</string>
     <string name="title_activity_sandbox_main_view">Leanback SandboxMainView</string>
     <string name="browse_title">Videos by Your Company</string>
     <string name="related_movies">Related Videos</string>

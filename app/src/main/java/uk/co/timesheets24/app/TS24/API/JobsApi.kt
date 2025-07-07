@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
-import uk.co.timesheets24.app.timesheetssandbox.BuildConfig
+import uk.co.timesheets24.app.TS24.BuildConfig
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.Models.EditingTimeSheet
 import uk.co.timesheets24.app.TS24.Models.RemoteData.JobTimeStatusRemote

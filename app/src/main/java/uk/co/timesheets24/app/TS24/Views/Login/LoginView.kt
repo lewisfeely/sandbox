@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import uk.co.timesheets24.app.TS24.UI.theme.TSBlue
-import uk.co.timesheets24.app.timesheetssandbox.R
+import uk.co.timesheets24.app.TS24.R
 
 import kotlin.jvm.java
 

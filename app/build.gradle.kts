@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "uk.co.timesheets24.app.timesheetssandbox"
+    namespace = "uk.co.timesheets24.app.TS24"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "uk.co.timesheets24.app.timesheetssandbox"
+        applicationId = "uk.co.timesheets24.app.TS24"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

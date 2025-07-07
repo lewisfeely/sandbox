@@ -7,7 +7,7 @@ import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import uk.co.timesheets24.app.TS24.Models.RemoteData.ProfileRemote
 import uk.co.timesheets24.app.TS24.Models.RemoteData.RecentEntryRemote
-import uk.co.timesheets24.app.timesheetssandbox.R
+import uk.co.timesheets24.app.TS24.R
 import java.security.KeyStore
 import java.security.cert.CertificateFactory
 import javax.net.ssl.SSLContext

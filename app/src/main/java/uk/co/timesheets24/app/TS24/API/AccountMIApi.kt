@@ -9,7 +9,7 @@ import retrofit2.http.Path
 
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.Models.RemoteData.DashboardRemote
-import uk.co.timesheets24.app.timesheetssandbox.BuildConfig
+import uk.co.timesheets24.app.TS24.BuildConfig
 
 class AccountMIApiClass(context: Context) {
 
