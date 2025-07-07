@@ -2,6 +2,8 @@ package uk.co.timesheets24.app.TS24.Views.Login
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -18,10 +20,14 @@ import uk.co.timesheets24.app.TS24.API.AuthApiClass
 import uk.co.timesheets24.app.TS24.API.ProfileApiClass
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.Views.Dashboard.DashboardView
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.jvm.java
 import kotlin.to
 
 class LoginScreenViewModel: ViewModel() {
+
+
 
     val _loading = mutableStateOf(false)
     val loading : State<Boolean> = _loading
@@ -42,8 +48,10 @@ class LoginScreenViewModel: ViewModel() {
             try {
                 state.value = "authenticating..."
                 val logInResponse = authApi.authentication(email, password)
+                GlobalLookUp.token = logInResponse.access_token
                 state.value = "fetching account details"
-                val accountDetails = profileApi.details(logInResponse.access_token)
+                val accountDetails = profileApi.details("Bearer ${logInResponse.access_token}")
+
                 GlobalLookUp.userState = accountDetails
                 state.value = "navigating..."
                 val intent = Intent(context, DashboardView::class.java)
@@ -51,6 +59,8 @@ class LoginScreenViewModel: ViewModel() {
 
             } catch (e : Exception) {
                 println("RESPONSE $e error inside login")
+                _loading.value = false
+                _error.value = true
             }
         }
 
@@ -58,8 +68,6 @@ class LoginScreenViewModel: ViewModel() {
     }
 
     fun syncData(context : Context) {
-
-
 
     }
 
@@ -70,5 +78,4 @@ class LoginScreenViewModel: ViewModel() {
     fun onlineAutoLogin(context: Context) {
 
     }
-
 }

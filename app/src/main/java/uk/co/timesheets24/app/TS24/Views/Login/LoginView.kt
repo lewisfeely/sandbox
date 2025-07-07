@@ -41,8 +41,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import uk.co.timesheets24.app.TS24.UI.theme.TSBlue
+import uk.co.timesheets24.app.TS24.UI.theme.TS24Theme
 import uk.co.timesheets24.app.TS24.R
 
 import kotlin.jvm.java
@@ -54,24 +57,29 @@ class LoginView : ComponentActivity() {
         setContent {
             val viewModel : LoginScreenViewModel = viewModel()
             val context : Context = this
+            val lifecycleOwner : LifecycleOwner = LocalLifecycleOwner.current
 
+            TS24Theme {
                 if (!viewModel.loadingOffLog.value) {
-                    LoginPage(viewModel, context)
+                    LoginPage(viewModel, context, lifecycleOwner)
                 } else {
                     LoadingScreen()
                 }
+            }
         }
     }
 }
 
 @Composable
-fun LoginPage(viewModel: LoginScreenViewModel, context: Context) {
+fun LoginPage(viewModel: LoginScreenViewModel, context: Context, lifecycleOwner: LifecycleOwner) {
 
+    val theme = MaterialTheme.colorScheme
     val email = remember { mutableStateOf("mike.feely@outlook.com") }
     val password = remember { mutableStateOf("London2016#") }
+    val loadingMessageState = remember { mutableStateOf("") }
 
 
-    Column (modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+    Column (modifier = Modifier.fillMaxSize().background(theme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top)
     {
@@ -83,19 +91,19 @@ fun LoginPage(viewModel: LoginScreenViewModel, context: Context) {
             modifier = Modifier.size(180.dp)
         )
         Spacer(Modifier.height(50.dp))
-        Text("Welcome!", color = MaterialTheme.colorScheme.onPrimary, fontSize = 30.sp)
+        Text("Welcome!", color = theme.onPrimary, fontSize = 30.sp)
 
         Spacer(Modifier.height(15.dp))
             TextField(
                 value = email.value,
                 onValueChange = { email.value = it },
                 placeholder = { Text("email") },
-                modifier = Modifier.width(250.dp).border(width = 1.dp, color = MaterialTheme.colorScheme.onPrimary).testTag("email_Field"),
+                modifier = Modifier.width(250.dp).border(width = 1.dp, color = theme.onPrimary).testTag("email_Field"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = theme.background,
                     focusedTextColor = Color.Black,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedTextColor = theme.onPrimary,
                     cursorColor = Color.Blue,
                     focusedLabelColor = Color.Blue,
                     unfocusedPlaceholderColor = Color.White
@@ -108,14 +116,14 @@ fun LoginPage(viewModel: LoginScreenViewModel, context: Context) {
                 placeholder = { Text("password") },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = theme.background,
                     focusedTextColor = Color.Black,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedTextColor = theme.onPrimary,
                     cursorColor = Color.Blue,
                     focusedLabelColor = Color.Blue,
                     unfocusedPlaceholderColor = Color.White
                 ),
-                modifier = Modifier.width(250.dp).border(width = 1.dp, color = MaterialTheme.colorScheme.onPrimary).testTag("password_Field")
+                modifier = Modifier.width(250.dp).border(width = 1.dp, color = theme.onPrimary).testTag("password_Field")
 
             )
         Spacer(Modifier.height(20.dp))
@@ -126,19 +134,24 @@ fun LoginPage(viewModel: LoginScreenViewModel, context: Context) {
                     viewModel.processLogin(context, email.value, password.value)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = theme.onPrimary,
+                    containerColor = theme.primary,
                     disabledContainerColor = TSBlue
                 ),
-                modifier = Modifier.border(width = 2.dp, color = MaterialTheme.colorScheme.onPrimary).testTag("login_Button")
+                modifier = Modifier.border(width = 2.dp, color = theme.onPrimary).testTag("login_Button")
             ) {
                 Text("Submit")
             }
+            if(viewModel._error.value) {
+                Text("error has occured please try again", color = theme.error)
+            }
         } else if (viewModel.loading.value) {
             CircularProgressIndicator(color = Color.White)
+            Text(loadingMessageState.value, color = Color.White)
+            viewModel.state.observe(lifecycleOwner) { loadingState ->
+                loadingMessageState.value = loadingState
+            }
 
-//            viewModel.state.value.observe()
-            Text(viewModel.state.value.toString(), color = Color.White)
         }
 
         Spacer(Modifier.height(20.dp))
@@ -149,7 +162,8 @@ fun LoginPage(viewModel: LoginScreenViewModel, context: Context) {
 
 @Composable
 fun LoadingScreen() {
-    Column (modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+    val theme = MaterialTheme.colorScheme
+    Column (modifier = Modifier.fillMaxSize().background(theme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top)
     {
