@@ -1,6 +1,7 @@
 package uk.co.timesheets24.app.TS24.Views.RecentEntries
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +19,7 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import uk.co.timesheets24.app.TS24.API.JobsApiClass
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.LocalDataSevice.RefreshLocalData
@@ -47,16 +49,41 @@ class RecentEntriesViewModel : ViewModel() {
         }
     }
 
-    fun editRecentEntry(context: Context, currentTimeSheet: EditingTimeSheet?) {
-        val workManager = WorkManager.getInstance(context.applicationContext)
+    fun viewTimeSheet(context: Context, recentEntry : RecentEntryLocal) {
+        val timesheetApi = JobsApiClass(context).jobs
 
         viewModelScope.launch {
+            try {
+                val timesheet = timesheetApi.getRecentEntry("Bearer ${GlobalLookUp.token}", recentEntry.timeId)
+                // navigate to edit time sheets page here and pass the timeid or temp id if offline and make the entries list globally accessable
+//                val intent = Intent(context, )
+
+            } catch (e : Exception) {
+
+                println("RESPONSE $e failed inside view timesheet")
+
+            }
+
 
         }
     }
 
-    fun deleteRecentEntry(context: Context, timeId : String, description : String) {
+    fun deleteRecentEntry(context: Context, recentEntry : RecentEntryLocal) {
+        val jobs = JobsApiClass(context).jobs
 
+        viewModelScope.launch {
+            try {
+
+                jobs.deleteTimesheet("Bearer ${GlobalLookUp.token}", recentEntry.timeId)
+                val instance = LocalUserDatabase.getInstance(context.applicationContext)
+                val recentEntryDao = instance.recentEntriesDao()
+                recentEntryDao.clearEntries()
+                RefreshLocalData(context)
+
+            } catch (e : Exception) {
+                println("RESPONSE $e error in delete timesheet")
+            }
+        }
     }
 
 }

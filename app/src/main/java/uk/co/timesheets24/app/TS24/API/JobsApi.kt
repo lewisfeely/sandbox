@@ -12,6 +12,7 @@ import retrofit2.http.Path
 import uk.co.timesheets24.app.TS24.BuildConfig
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.Models.EditingTimeSheet
+import uk.co.timesheets24.app.TS24.Models.ReceivedTimeSheet
 import uk.co.timesheets24.app.TS24.Models.RemoteData.JobTimeStatusRemote
 import uk.co.timesheets24.app.TS24.Models.RemoteData.LiveJobRemote
 import uk.co.timesheets24.app.TS24.Models.RemoteData.RecentEntryRemote
@@ -37,8 +38,8 @@ class JobsApiClass(context: Context) {
         @GET("recententries")
         suspend fun recentEntries(@Header("Authorization") token: String): List<RecentEntryRemote>
 
-//    @GET("timesheets/{tsId}")
-//    suspend fun getJob(@Header("Authorization") token : String, @Path("tsId") tsId : String) : ReceivedTimeSheet
+        @GET("timesheets/{tsId}")
+        suspend fun getRecentEntry(@Header("Authorization") token : String, @Path("tsId") tsId : String) : ReceivedTimeSheet
 
         @POST("timesheets")
         suspend fun editTimesheet(
