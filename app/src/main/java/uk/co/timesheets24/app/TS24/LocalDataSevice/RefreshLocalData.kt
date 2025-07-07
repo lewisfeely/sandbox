@@ -1,6 +1,7 @@
 package uk.co.timesheets24.app.TS24.LocalDataSevice
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import uk.co.timesheets24.app.TS24.API.AccountMIApiClass
 import uk.co.timesheets24.app.TS24.API.JobsApiClass
@@ -21,7 +22,7 @@ class RefreshLocalData (private val context: Context) : IRefreshLocalData {
     val accountMIApi = AccountMIApiClass(context).accountMI
 
     var refreshRunning:Boolean = false
-    var resreshDescription:String = ""
+    val refreshDescription = MutableLiveData<String>()
 
     override suspend fun DoWork() : Boolean {
 
@@ -29,27 +30,25 @@ class RefreshLocalData (private val context: Context) : IRefreshLocalData {
             return false;
         }
 
-        resreshDescription = "Starting refresh"
+        refreshDescription.value = "Starting refresh"
         refreshRunning = true;
 
-        // body
-
-        resreshDescription = "Refreshing live jobs"
+        refreshDescription.value = "Refreshing live jobs"
         RefreshLiveJobs()
 
-        resreshDescription = "Refreshing live jobs"
+        refreshDescription.value = "Refreshing live timesheets"
         RefreshRecentEntries()
 
-        resreshDescription = "Refreshing dashboard data"
+        refreshDescription.value = "Refreshing dashboard data"
         RefreshDashboard()
 
-        resreshDescription = "Refreshing job status codes"
+        refreshDescription.value = "Refreshing job status codes"
         RefreshJobTimeStatus()
 
-        resreshDescription = "Refreshing user profile"
+        refreshDescription.value = "Refreshing user profile"
         RefreshUser()
 
-        resreshDescription = "Refreshing permissions"
+        refreshDescription.value = "Refreshing permissions"
         RefreshRecentPermissions()
 
         refreshRunning = false;

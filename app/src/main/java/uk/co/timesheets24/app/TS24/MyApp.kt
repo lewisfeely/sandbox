@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
+import uk.co.timesheets24.app.TS24.Models.RemoteData.ProfileRemote
 import uk.co.timesheets24.app.TS24.Models.RemoteData.RecentEntryRemote
 import uk.co.timesheets24.app.timesheetssandbox.R
 import java.security.KeyStore
@@ -17,6 +18,11 @@ import kotlin.collections.first
 
 object GlobalLookUp {
 
+
+    var contactId : String = ""
+    var selectedTab : Int = 0
+    var offlineTimeSheetId : Int = 0
+    var userState : ProfileRemote? = null
     var token : String? = null
     var recentEntries : List<RecentEntryRemote>? = null
 
