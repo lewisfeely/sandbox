@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TimeSheetsSandbox"
+rootProject.name = "TS24"
 include(":app")
  

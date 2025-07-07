@@ -20,8 +20,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         tools:targetApi="31">
+
         <activity
-            android:name=".SandboxMainView"
+            android:name="uk.co.timesheets24.app.TS24.Views.Dashboard.DashboardView"
             android:banner="@drawable/app_icon_your_company"
             android:exported="true"
             android:icon="@drawable/app_icon_your_company"
