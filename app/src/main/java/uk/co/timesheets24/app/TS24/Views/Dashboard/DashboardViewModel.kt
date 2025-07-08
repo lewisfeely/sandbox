@@ -19,7 +19,9 @@ import kotlinx.coroutines.launch
 import uk.co.timesheets24.app.TS24.API.AccountMIApiClass
 import uk.co.timesheets24.app.TS24.API.AuthApiClass
 import uk.co.timesheets24.app.TS24.GlobalLookUp
+import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.LocalDataSevice.RefreshLocalData
+import uk.co.timesheets24.app.TS24.Models.LocalData.DashboardLocal
 import uk.co.timesheets24.app.TS24.Models.RemoteData.DashboardRemote
 import uk.co.timesheets24.app.TS24.Models.RemoteData.DashboardRequestRemote
 import uk.co.timesheets24.app.TS24.R
@@ -42,8 +44,8 @@ class DashboardViewModel : ViewModel() {
 
     val loadingUserHours = mutableStateOf(true)
 
-    private val _userHours = mutableStateOf<DashboardRemote?>(null)
-    val userHours : State<DashboardRemote?> = _userHours
+    private val _userHours = mutableStateOf<DashboardLocal?>(null)
+    val userHours : State<DashboardLocal?> = _userHours
 
     val fontAwesomeSolid = FontFamily(
         Font(R.font.fontawesome6freesolid900)  // refer to your font resource here
@@ -74,20 +76,16 @@ class DashboardViewModel : ViewModel() {
 
     fun syncData(context : Context) {
 
-
-
     }
 
 
     fun fetchJobDetails(context: Context) {
-        val accountMi = AccountMIApiClass(context).accountMI
+        val instance = LocalUserDatabase.getInstance(context.applicationContext)
+        val dashboardDao = instance.dashboardDao()
 
         viewModelScope.launch {
             try {
-                val dashboardData = accountMi.dashBoard("Bearer ${GlobalLookUp.token}",
-                    DashboardRequestRemote(timeSheetJobdateFrom = "2025-04-01T13:45:00Z", timeSheetJobdateTo = "2025-07-20T13:45:00Z").toString()
-                )
-                _userHours.value = dashboardData
+                _userHours.value = dashboardDao.fetch()
 
             } catch (e : Exception) {
                 println("RESPONSE $e inside dashboard details fetch")
