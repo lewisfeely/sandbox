@@ -28,6 +28,7 @@ object GlobalLookUp {
     var offlineTimeSheetId : Int = 0
     var userState : ProfileRemote? = null
     var token : String? = null
+    var refresh_token : String? = null
     var recentEntries : List<RecentEntryRemote>? = null
 
     fun getUnsafeOkHttpClient(context: Context): OkHttpClient {

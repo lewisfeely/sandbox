@@ -19,7 +19,9 @@ import kotlinx.coroutines.launch
 import uk.co.timesheets24.app.TS24.API.AuthApiClass
 import uk.co.timesheets24.app.TS24.API.ProfileApiClass
 import uk.co.timesheets24.app.TS24.GlobalLookUp
+import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.LocalDataSevice.RefreshLocalData
+import uk.co.timesheets24.app.TS24.Models.LocalData.AccessTokenLocal
 import uk.co.timesheets24.app.TS24.Views.Dashboard.DashboardView
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -42,45 +44,75 @@ class LoginScreenViewModel: ViewModel() {
     val state = MutableLiveData<String>()
 
     fun processLogin(context: Context, email : String, password: String) {
+        val accessDao = LocalUserDatabase.getInstance(context.applicationContext).accessTokenDao()
+
+
+        _loading.value = true
         val authApi = AuthApiClass(context).authApi
-        val profileApi = ProfileApiClass(context).profile
+
 
         viewModelScope.launch {
             try {
                 state.value = "authenticating..."
                 val logInResponse = authApi.authentication(email, password)
                 GlobalLookUp.token = logInResponse.access_token
-                state.value = "fetching account details"
-                val accountDetails = profileApi.details("Bearer ${logInResponse.access_token}")
+                GlobalLookUp.refresh_token = logInResponse.refresh_token
 
-                GlobalLookUp.userState = accountDetails
+                accessDao.clear()
+                accessDao.insert(AccessTokenLocal( accessToken =  logInResponse.access_token, refreshToken = logInResponse.refresh_token ))
+
                 state.value = "navigating..."
-
-                val refreshService = RefreshLocalData(context)
-                refreshService.DoWork()
 
                 val intent = Intent(context, DashboardView::class.java)
                 context.startActivity(intent)
-
+                _loading.value = false
             } catch (e : Exception) {
                 println("RESPONSE $e error inside login")
                 _loading.value = false
                 _error.value = true
             }
         }
+    }
 
+    fun checkRefreshToken(context: Context){
+
+
+
+        _loading.value = true
+        val authApi = AuthApiClass(context).authApi
+
+
+
+        viewModelScope.launch {
+            try {
+                val accessToken = LocalUserDatabase.getInstance(context.applicationContext).accessTokenDao().fetch()
+
+                if (accessToken.refreshToken == null || accessToken.refreshToken == "") {
+                    _loading.value = false
+                }
+                else {
+
+
+                    state.value = "authenticating..."
+                    val logInResponse =
+                        authApi.RefreshToken("refresh_token", GlobalLookUp.refresh_token.toString())
+
+                    GlobalLookUp.token = logInResponse.access_token
+                    GlobalLookUp.refresh_token = logInResponse.refresh_token
+                    state.value = "navigating..."
+
+                    val intent = Intent(context, DashboardView::class.java)
+                    context.startActivity(intent)
+                    _loading.value = false
+                }
+
+            } catch (e: Exception) {
+                println("RESPONSE $e error inside login")
+                _loading.value = false
+                _error.value = true
+            }
+        }
 
     }
 
-    fun syncData(context : Context) {
-
-    }
-
-    fun offlineLogin(context : Context) {
-
-    }
-
-    fun onlineAutoLogin(context: Context) {
-
-    }
 }

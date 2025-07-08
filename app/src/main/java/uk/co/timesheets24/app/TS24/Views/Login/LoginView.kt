@@ -60,23 +60,25 @@ class LoginView : ComponentActivity() {
             val lifecycleOwner : LifecycleOwner = LocalLifecycleOwner.current
 
             TS24Theme {
-                if (!viewModel.loadingOffLog.value) {
-                    LoginPage(viewModel, context, lifecycleOwner)
-                } else {
-                    LoadingScreen()
-                }
+                LoginPage(viewModel, context, lifecycleOwner)
             }
         }
     }
 }
 
 @Composable
+
 fun LoginPage(viewModel: LoginScreenViewModel, context: Context, lifecycleOwner: LifecycleOwner) {
 
     val theme = MaterialTheme.colorScheme
     val email = remember { mutableStateOf("mike.feely@outlook.com") }
     val password = remember { mutableStateOf("London2016#") }
     val loadingMessageState = remember { mutableStateOf("") }
+
+
+    LaunchedEffect(Unit) {
+        viewModel.checkRefreshToken(context)
+    }
 
 
     Column (modifier = Modifier.fillMaxSize().background(theme.background),
@@ -130,7 +132,6 @@ fun LoginPage(viewModel: LoginScreenViewModel, context: Context, lifecycleOwner:
         if (viewModel.loading.value != true) {
             Button(
                 onClick = {
-                    viewModel._loading.value = true
                     viewModel.processLogin(context, email.value, password.value)
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -158,15 +159,4 @@ fun LoginPage(viewModel: LoginScreenViewModel, context: Context, lifecycleOwner:
 
     }
 
-}
-
-@Composable
-fun LoadingScreen() {
-    val theme = MaterialTheme.colorScheme
-    Column (modifier = Modifier.fillMaxSize().background(theme.background),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top)
-    {
-        CircularProgressIndicator(color = Color.White)
-    }
 }

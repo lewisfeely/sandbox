@@ -26,11 +26,20 @@ class AuthApiClass(context: Context) {
 
     interface ApiService {
 
-    @FormUrlEncoded
-    @POST("auth")
-    suspend fun authentication(@Field("email") email: String,
-                               @Field("password") password: String) : AuthResponse
+        @FormUrlEncoded
+        @POST("auth")
+        suspend fun authentication(
+            @Field("email") email: String,
+            @Field("password") password: String
+        ): AuthResponse
+
+        @FormUrlEncoded
+        @POST("RefreshToken")
+        suspend fun RefreshToken(
+            @Field("grantType") grantType: String,
+            @Field("refreshToken") refreshToken: String
+        ): AuthResponse
+
 
     }
-
 }

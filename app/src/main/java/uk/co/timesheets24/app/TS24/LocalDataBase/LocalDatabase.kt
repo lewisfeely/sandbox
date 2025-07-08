@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.AccessTokenDao
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.DashboardDao
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.JobTimeStatusDao
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.JobsDao
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.PermissionDao
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.ProfileDao
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.RecentEntries
+import uk.co.timesheets24.app.TS24.Models.LocalData.AccessTokenLocal
 import uk.co.timesheets24.app.TS24.Models.LocalData.DashboardLocal
 import uk.co.timesheets24.app.TS24.Models.LocalData.JobTimeStatusLocal
 import uk.co.timesheets24.app.TS24.Models.LocalData.LiveJobLocal
@@ -24,8 +26,9 @@ import kotlin.jvm.java
      DashboardLocal::class,
      JobTimeStatusLocal::class,
      ProfileLocal::class,
-     PermissionLocal::class],
-     version = 4)
+     PermissionLocal::class,
+     AccessTokenLocal::class],
+     version = 5)
 abstract class LocalUserDatabase : RoomDatabase() {
 
     abstract fun jobDao() : JobsDao
@@ -34,6 +37,7 @@ abstract class LocalUserDatabase : RoomDatabase() {
     abstract fun jobTimeStatusDao() : JobTimeStatusDao
     abstract fun profileDao() : ProfileDao
     abstract fun permissionDao() : PermissionDao
+     abstract fun accessTokenDao() : AccessTokenDao
 
     companion object {
 
