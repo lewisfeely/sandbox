@@ -14,6 +14,9 @@ import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.Models.LocalData.AccessTokenLocal
 import uk.co.timesheets24.app.TS24.Models.RemoteData.RefreshTokenRemote
 import uk.co.timesheets24.app.TS24.Views.DashboardContainer.DashboardView
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.jvm.java
 
 class LoginScreenViewModel: ViewModel() {
@@ -43,9 +46,8 @@ class LoginScreenViewModel: ViewModel() {
                 val logInResponse = authApi.authentication(email, password)
                 GlobalLookUp.token = logInResponse.access_token
                 GlobalLookUp.refresh_token = logInResponse.refresh_token
-
                 accessDao.clear()
-                accessDao.insert(AccessTokenLocal( accessToken =  logInResponse.access_token, refreshToken = logInResponse.refresh_token ))
+                accessDao.insert(AccessTokenLocal( accessToken =  logInResponse.access_token, refreshToken = logInResponse.refresh_token, timeCreated = getCurrentTimestamp()))
 
                 state.value = "navigating..."
 
@@ -60,15 +62,14 @@ class LoginScreenViewModel: ViewModel() {
         }
     }
 
+    fun getCurrentTimestamp(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(Date())
+    }
+
     fun checkRefreshToken(context: Context){
-
-
-
         _loading.value = true
         val authApi = AuthApiClass(context).authApi
-
-
-
         viewModelScope.launch {
             try {
                 val accessTokenDao = LocalUserDatabase.getInstance(context.applicationContext).accessTokenDao()
@@ -84,7 +85,7 @@ class LoginScreenViewModel: ViewModel() {
                     GlobalLookUp.token = logInResponse.access_token
                     GlobalLookUp.refresh_token = logInResponse.refresh_token
                     accessTokenDao.clear()
-                    accessTokenDao.insert(AccessTokenLocal(accessToken = logInResponse.access_token, refreshToken = logInResponse.refresh_token))
+                    accessTokenDao.insert(AccessTokenLocal(accessToken = logInResponse.access_token, refreshToken = logInResponse.refresh_token, timeCreated = getCurrentTimestamp()))
                     state.value = "navigating..."
                     val intent = Intent(context, DashboardView::class.java)
                     context.startActivity(intent)

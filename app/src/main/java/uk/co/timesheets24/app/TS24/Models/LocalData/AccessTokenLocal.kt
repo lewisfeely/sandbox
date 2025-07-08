@@ -9,4 +9,5 @@ data class AccessTokenLocal (
     val id: Int = 0,
     val accessToken: String?,
     val refreshToken: String?,
+    val timeCreated : String?
 )

@@ -6,6 +6,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
@@ -26,6 +28,7 @@ import uk.co.timesheets24.app.TS24.LocalDataSevice.RefreshLocalData
 import uk.co.timesheets24.app.TS24.Models.EditingTimeSheet
 import uk.co.timesheets24.app.TS24.Models.LocalData.RecentEntryLocal
 import uk.co.timesheets24.app.TS24.Models.RemoteData.RecentEntryRemote
+import uk.co.timesheets24.app.TS24.R
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -33,6 +36,10 @@ import kotlin.collections.forEach
 import kotlin.to
 
 class RecentEntriesViewModel : ViewModel() {
+
+    val fontAwesomeSolid = FontFamily(
+        Font(R.font.fontawesome6freesolid900)  // refer to your font resource here
+    )
 
     val loading = mutableStateOf(false)
     var recentEntriesList = mutableListOf<RecentEntryLocal>()
@@ -46,6 +53,7 @@ class RecentEntriesViewModel : ViewModel() {
             val recentEntryDao = instance.recentEntriesDao()
             recentEntriesList = recentEntryDao.fetchEntries().toMutableList()
             loading.value = false
+            dialog.value = false
         }
     }
 
@@ -69,20 +77,22 @@ class RecentEntriesViewModel : ViewModel() {
     }
 
     fun deleteRecentEntry(context: Context, recentEntry : RecentEntryLocal) {
+        loading.value = true
         val jobs = JobsApiClass(context).jobs
 
         viewModelScope.launch {
             try {
-
-                jobs.deleteTimesheet("Bearer ${GlobalLookUp.token}", recentEntry.timeId)
-                val instance = LocalUserDatabase.getInstance(context.applicationContext)
-                val recentEntryDao = instance.recentEntriesDao()
-                recentEntryDao.clearEntries()
-                RefreshLocalData(context)
-
+                    jobs.deleteTimesheet("Bearer ${GlobalLookUp.token}", recentEntry.timeId.toString())
+                    val instance = LocalUserDatabase.getInstance(context.applicationContext)
+                    val recentEntryDao = instance.recentEntriesDao()
+                    recentEntryDao.clearEntries()
+                    RefreshLocalData(context)
+                    dialog.value = false
             } catch (e : Exception) {
                 println("RESPONSE $e error in delete timesheet")
+                dialog.value = false
             }
+            loading.value = false
         }
     }
 

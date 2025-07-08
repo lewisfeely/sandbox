@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
@@ -59,12 +60,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.UI.theme.TS24Theme
 import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
+import kotlin.collections.get
 import kotlin.collections.isNotEmpty
 import kotlin.jvm.java
+import kotlin.text.clear
 
 
 class RecentEntriesView : ComponentActivity() {
@@ -117,13 +121,11 @@ fun RecentEntriesScreen() {
                         val dismissState = rememberDismissState(
                             confirmStateChange = {
                                 if (it == DismissValue.DismissedToStart) {
-                                    viewModel.deleteRecentEntry(context, recentEntry)
                                     viewModel.dialog.value = true
                                 }
                                 true
                             }
                         )
-
                         SwipeToDismiss(
                             state = dismissState,
                             background = {
@@ -226,14 +228,50 @@ fun RecentEntriesScreen() {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     modifier = Modifier.fillMaxSize()
                                 ) {
-//                                                Icon(
-//                                                    painter = painterResource(R.drawable.chevronrightsolid),
-//                                                    contentDescription = "Menu",
-//                                                    tint = MaterialTheme.colorScheme.onPrimary,
-//                                                    modifier = Modifier.size(40.dp)
-//                                                )
+                                    Text(
+                                        fontFamily = viewModel.fontAwesomeSolid,
+                                        color = Color.White,
+                                        fontSize = 30.sp,
+                                        modifier = Modifier.size(40.dp),
+                                        text = "\uf054"
+                                        )
                                 }
 
+                            }
+                            when (viewModel.dialog.value) {
+                                true -> {
+                                    Dialog(onDismissRequest = {}) {
+
+                                        Column(
+                                            Modifier
+                                                .height(200.dp).width(300.dp)
+                                                .background(color = Color(0XFF1e293b))
+                                                .border(
+                                                    width = 2.dp,
+                                                    color = Color.White
+                                                ),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Text("confirm delete")
+                                            Row {
+                                                Button(onClick = {
+                                                    viewModel.deleteRecentEntry(context, recentEntry)
+                                                }) {
+                                                    Text("Confirm")
+                                                }
+                                                Button(onClick = {
+                                                    viewModel.fetchRecentEntries(context)
+                                                }) {
+                                                    Text("Cancel")
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                                false -> {}
                             }
 
                         } })

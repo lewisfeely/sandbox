@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.AccessTokenDao
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.DashboardDao
 import uk.co.timesheets24.app.TS24.LocalDataBase.Dao.JobTimeStatusDao
@@ -28,7 +30,7 @@ import kotlin.jvm.java
      ProfileLocal::class,
      PermissionLocal::class,
      AccessTokenLocal::class],
-     version = 5)
+     version = 6)
 abstract class LocalUserDatabase : RoomDatabase() {
 
     abstract fun jobDao() : JobsDao
@@ -41,12 +43,11 @@ abstract class LocalUserDatabase : RoomDatabase() {
 
     companion object {
 
-//        val Migration_13_14 = object : Migration(13, 14) {
-//            override fun migrate(database: SupportSQLiteDatabase) {
-//                database.execSQL("ALTER TABLE pending_entries_table ADD COLUMN clientName TEXT")
-//                database.execSQL("ALTER TABLE pending_entries_table ADD COLUMN jobNumber INTEGER NOT NULL DEFAULT 0")
-//            }
-//        }
+        val Migration_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE AccessToken ADD COLUMN timeCreated TEXT")
+            }
+        }
 
         @Volatile
         private var INSTANCE: LocalUserDatabase? = null
@@ -58,7 +59,7 @@ abstract class LocalUserDatabase : RoomDatabase() {
                     context.applicationContext,
                     LocalUserDatabase::class.java,
                     "user_logged"
-                ).fallbackToDestructiveMigration().build()
+                ).fallbackToDestructiveMigration().addMigrations(Migration_5_6).build()
                 INSTANCE = instance
                 instance
             }

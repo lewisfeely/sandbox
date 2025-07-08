@@ -35,17 +35,12 @@ class DashboardContainerViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 loading.value = true
-                val authApi = AuthApiClass(context).authApi
-                val response = authApi.refreshToken(RefreshTokenRemote(GlobalLookUp.refresh_token.toString(), "refresh_token"))
-                GlobalLookUp.token = response.access_token
                 val board = RefreshLocalData(context)
+                board.DoWork()
                 board.refreshDescription.observe(lifecycleOwner) {newValue ->
                     state.value = newValue
                 }
-
-                board.DoWork()
                 loading.value = false
-
             } catch (e: Exception) {
                 println("RESPONSE $e Inside Login ViewModel")
                 error.value = true

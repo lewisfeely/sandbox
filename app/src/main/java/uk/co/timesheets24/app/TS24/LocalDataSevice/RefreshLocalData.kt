@@ -4,12 +4,20 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import uk.co.timesheets24.app.TS24.API.AccountMIApiClass
+import uk.co.timesheets24.app.TS24.API.AuthApiClass
 import uk.co.timesheets24.app.TS24.API.JobsApiClass
 import uk.co.timesheets24.app.TS24.API.ProfileApiClass
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.Models.Conversion.ConvertToLocalData
 import uk.co.timesheets24.app.TS24.Models.DashboardRequest
+import uk.co.timesheets24.app.TS24.Models.LocalData.AccessTokenLocal
+import uk.co.timesheets24.app.TS24.Models.RemoteData.RefreshTokenRemote
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 
 class RefreshLocalData (private val context: Context) : IRefreshLocalData {
 
@@ -33,6 +41,9 @@ class RefreshLocalData (private val context: Context) : IRefreshLocalData {
         refreshDescription.postValue("Starting refresh")
         refreshRunning = true;
 
+        refreshDescription.postValue("checking token")
+        refreshToken()
+
         refreshDescription.postValue("Refreshing live jobs")
         RefreshLiveJobs()
 
@@ -51,8 +62,35 @@ class RefreshLocalData (private val context: Context) : IRefreshLocalData {
         refreshDescription.postValue("Refreshing permissions")
         RefreshRecentPermissions()
 
+        refreshDescription.postValue("")
         refreshRunning = false;
         return false
+    }
+
+    suspend fun refreshToken() : Boolean {
+        val tokenTable = localDBConnection.accessTokenDao()
+        val createdDate = tokenTable.fetch().timeCreated
+        if (isOverAnHourOld(createdDate.toString())) {
+            try {
+                val authApi = AuthApiClass(context).authApi
+                val response = authApi.refreshToken(RefreshTokenRemote("refresh_token", GlobalLookUp.refresh_token.toString()))
+                GlobalLookUp.token = response.access_token
+                val tokenTable = localDBConnection.accessTokenDao()
+                tokenTable.clear()
+                tokenTable.insert(AccessTokenLocal(accessToken = response.access_token, refreshToken = response.refresh_token, timeCreated = getCurrentTimestamp()))
+            } catch (e : Exception) {
+                println("RESPONSE $e error inside refresh token")
+                return false
+            }
+
+            return true
+        }
+        return true
+    }
+
+    fun getCurrentTimestamp(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 
     suspend fun RefreshLiveJobs(): Boolean {
@@ -133,6 +171,24 @@ class RefreshLocalData (private val context: Context) : IRefreshLocalData {
             return true;
         }
         return false;
+    }
+
+    fun isOverAnHourOld(dateString: String): Boolean {
+        return try {
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            format.timeZone = TimeZone.getDefault() // optional; use UTC if needed
+
+            val inputDate = format.parse(dateString)
+            val currentDate = Date()
+
+            val differenceInMillis = currentDate.time - inputDate.time
+            val differenceInHours = TimeUnit.MILLISECONDS.toHours(differenceInMillis)
+
+            differenceInHours >= 1
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
 

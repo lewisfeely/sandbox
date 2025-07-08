@@ -128,6 +128,7 @@ fun DashBoardNav() {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            .background(TSDarkBlue)
             .padding(WindowInsets.navigationBars.asPaddingValues()),
         topBar =
             {
@@ -236,7 +237,7 @@ fun DashBoardNav() {
                 modifier = Modifier.fillMaxWidth().weight(1f)
             ) {
                 Column (
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().background(TSDarkBlue),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -270,11 +271,12 @@ fun DashBoardNav() {
                                             horizontalAlignment = Alignment.CenterHorizontally
                                         ) {
                                             Text(
-                                                "\uf007",
+                                                "\uf133",
                                                 color = Color.White,
                                                 fontSize = 30.sp,
                                                 fontFamily = viewModel.fontAwesomeSolid,
                                             )
+                                            Text("create job", color = MaterialTheme.colors.onPrimary)
                                         }
                                     }
                                 }
@@ -290,11 +292,12 @@ fun DashBoardNav() {
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            "\uf007",
+                                            "\uf15b",
                                             color = Color.White,
                                             fontSize = 30.sp,
                                             fontFamily = viewModel.fontAwesomeSolid,
                                         )
+                                        Text("create timesheet", color = MaterialTheme.colors.onPrimary)
                                     }
 
                                 }
