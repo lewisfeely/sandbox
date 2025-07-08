@@ -3,6 +3,7 @@ package uk.co.timesheets24.app.TS24.API
 import android.content.Context
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -10,6 +11,7 @@ import retrofit2.http.POST
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.Models.AuthResponse
 import uk.co.timesheets24.app.TS24.BuildConfig
+import uk.co.timesheets24.app.TS24.Models.RemoteData.RefreshTokenRemote
 
 class AuthApiClass(context: Context) {
 
@@ -33,11 +35,9 @@ class AuthApiClass(context: Context) {
             @Field("password") password: String
         ): AuthResponse
 
-        @FormUrlEncoded
         @POST("RefreshToken")
-        suspend fun RefreshToken(
-            @Field("grantType") grantType: String,
-            @Field("refreshToken") refreshToken: String
+        suspend fun refreshToken(
+            @Body refresh : RefreshTokenRemote
         ): AuthResponse
 
 

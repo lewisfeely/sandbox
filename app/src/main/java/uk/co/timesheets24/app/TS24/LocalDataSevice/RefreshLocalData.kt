@@ -30,25 +30,25 @@ class RefreshLocalData (private val context: Context) : IRefreshLocalData {
             return false;
         }
 
-        refreshDescription.value = "Starting refresh"
+        refreshDescription.postValue("Starting refresh")
         refreshRunning = true;
 
-        refreshDescription.value = "Refreshing live jobs"
+        refreshDescription.postValue("Refreshing live jobs")
         RefreshLiveJobs()
 
-        refreshDescription.value = "Refreshing live timesheets"
+        refreshDescription.postValue("Refreshing live timesheets")
         RefreshRecentEntries()
 
-        refreshDescription.value = "Refreshing dashboard data"
+        refreshDescription.postValue("Refreshing dashboard data")
         RefreshDashboard()
 
-        refreshDescription.value = "Refreshing job status codes"
+        refreshDescription.postValue("Refreshing job status codes")
         RefreshJobTimeStatus()
 
-        refreshDescription.value = "Refreshing user profile"
+        refreshDescription.postValue("Refreshing user profile")
         RefreshUser()
 
-        refreshDescription.value = "Refreshing permissions"
+        refreshDescription.postValue("Refreshing permissions")
         RefreshRecentPermissions()
 
         refreshRunning = false;
@@ -84,8 +84,7 @@ class RefreshLocalData (private val context: Context) : IRefreshLocalData {
     }
 
     suspend fun RefreshDashboard(): Boolean {
-        val requestStr = Gson().toJson(DashboardRequest(timeSheetJobdateFrom = "2025-04-01T13:45:00Z", timeSheetJobdateTo = "2025-07-20T13:45:00Z"))
-        println("RESPONSE $requestStr")
+        val requestStr = Gson().toJson(DashboardRequest(timeSheetJobdateFrom = "2025-05-01T13:45:00Z", timeSheetJobdateTo = "2025-07-20T13:45:00Z"))
         val dashboardData = accountMIApi.dashBoard("Bearer ${GlobalLookUp.token}", requestStr)
         val dashboardDao = localDBConnection.dashboardDao()
         dashboardDao.insert(convertService.convertToLocalDashboard(dashboardData))

@@ -1,4 +1,4 @@
-package uk.co.timesheets24.app.TS24.Views.Dashboard
+package uk.co.timesheets24.app.TS24.Views.DashboardContainer
 
 import android.content.Context
 import androidx.compose.runtime.State
@@ -14,9 +14,10 @@ import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.LocalDataSevice.RefreshLocalData
 import uk.co.timesheets24.app.TS24.Models.LocalData.DashboardLocal
+import uk.co.timesheets24.app.TS24.Models.RemoteData.RefreshTokenRemote
 import uk.co.timesheets24.app.TS24.R
 
-class DashboardViewModel : ViewModel() {
+class DashboardContainerViewModel : ViewModel() {
 
     val error = mutableStateOf(false)
 
@@ -24,53 +25,32 @@ class DashboardViewModel : ViewModel() {
 
     val state = mutableStateOf("")
 
-    private val _userHours = mutableStateOf<DashboardLocal?>(null)
-    val userHours : State<DashboardLocal?> = _userHours
+    val navigationPopUp = mutableStateOf(false)
 
     val fontAwesomeSolid = FontFamily(
         Font(R.font.fontawesome6freesolid900)  // refer to your font resource here
     )
 
-    fun fetchJobDetails(context: Context) {
-        val instance = LocalUserDatabase.getInstance(context.applicationContext)
-        val dashboardDao = instance.dashboardDao()
-
-        viewModelScope.launch {
-            try {
-                loading.value = true
-                _userHours.value = dashboardDao.fetch()
-            } catch (e : Exception) {
-                println("RESPONSE $e inside dashboard details fetch")
-            }
-        }
-    }
-
     fun syncData(context : Context, lifecycleOwner: LifecycleOwner) {
         viewModelScope.launch {
             try {
+                loading.value = true
                 val authApi = AuthApiClass(context).authApi
+                val response = authApi.refreshToken(RefreshTokenRemote(GlobalLookUp.refresh_token.toString(), "refresh_token"))
+                GlobalLookUp.token = response.access_token
                 val board = RefreshLocalData(context)
                 board.refreshDescription.observe(lifecycleOwner) {newValue ->
                     state.value = newValue
                 }
-                val response = authApi.authentication("mike.feely@outlook.com", "London2016#")
-                GlobalLookUp.token = response.access_token
+
                 board.DoWork()
-                fetchJobDetails(context)
                 loading.value = false
 
             } catch (e: Exception) {
                 println("RESPONSE $e Inside Login ViewModel")
                 error.value = true
                 loading.value = false
-
             }
         }
-    }
-
-    fun convertMinutesToHoursAndMinutes(totalMinutes: Int?): String {
-        val hours = totalMinutes?.div(60)
-        val minutes = totalMinutes?.rem(60)
-        return "${hours}h ${minutes}m"
     }
 }
