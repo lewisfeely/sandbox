@@ -18,45 +18,47 @@ import uk.co.timesheets24.app.TS24.R
 
 class DashboardViewModel : ViewModel() {
 
+    val lifecycleOwner = mutableStateOf<LifecycleOwner?>(null)
+
     val error = mutableStateOf(false)
 
     val loading = mutableStateOf(false)
 
     val state = mutableStateOf("")
 
-    private val _userHours = mutableStateOf<DashboardLocal?>(null)
+    val _userHours = mutableStateOf<DashboardLocal?>(null)
     val userHours : State<DashboardLocal?> = _userHours
 
     val fontAwesomeSolid = FontFamily(
         Font(R.font.fontawesome6freesolid900)  // refer to your font resource here
     )
 
-    fun fetchJobDetails(context: Context) {
-        val instance = LocalUserDatabase.getInstance(context.applicationContext)
-        val dashboardDao = instance.dashboardDao()
+    fun fetchJobDetails(context: Context, localUserDatabase: LocalUserDatabase) {
+        val dashboardDao = localUserDatabase.dashboardDao()
 
         viewModelScope.launch {
             try {
                 loading.value = true
                 _userHours.value = dashboardDao.fetch()
+                println("${userHours.value}")
             } catch (e : Exception) {
                 println("RESPONSE $e inside dashboard details fetch")
             }
         }
     }
 
-    fun syncData(context : Context, lifecycleOwner: LifecycleOwner) {
+    fun syncData(context : Context) {
         viewModelScope.launch {
             try {
                 val authApi = AuthApiClass(context).authApi
                 val board = RefreshLocalData(context)
-                board.refreshDescription.observe(lifecycleOwner) {newValue ->
+                board.refreshDescription.observe(lifecycleOwner.value!!) {newValue ->
                     state.value = newValue
                 }
                 val response = authApi.authentication("mike.feely@outlook.com", "London2016#")
                 GlobalLookUp.token = response.access_token
                 board.DoWork()
-                fetchJobDetails(context)
+                fetchJobDetails(context, LocalUserDatabase.getInstance(context.applicationContext))
                 loading.value = false
 
             } catch (e: Exception) {

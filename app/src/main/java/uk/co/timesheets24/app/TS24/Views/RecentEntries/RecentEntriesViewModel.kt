@@ -37,6 +37,8 @@ import kotlin.to
 
 class RecentEntriesViewModel : ViewModel() {
 
+//    LocalUserDatabase.getInstance(context.applicationContext)
+
     val fontAwesomeSolid = FontFamily(
         Font(R.font.fontawesome6freesolid900)  // refer to your font resource here
     )
@@ -45,11 +47,10 @@ class RecentEntriesViewModel : ViewModel() {
     var recentEntriesList = mutableListOf<RecentEntryLocal>()
     val dialog = mutableStateOf(false)
 
-    fun fetchRecentEntries(context: Context) {
+    fun fetchRecentEntries(context: Context, instance : LocalUserDatabase) {
         viewModelScope.launch {
             loading.value = true
             recentEntriesList.clear()
-            val instance = LocalUserDatabase.getInstance(context.applicationContext)
             val recentEntryDao = instance.recentEntriesDao()
             recentEntriesList = recentEntryDao.fetchEntries().toMutableList()
             loading.value = false
@@ -87,6 +88,7 @@ class RecentEntriesViewModel : ViewModel() {
                     val recentEntryDao = instance.recentEntriesDao()
                     recentEntryDao.clearEntries()
                     RefreshLocalData(context)
+                    fetchRecentEntries(context, instance)
                     dialog.value = false
             } catch (e : Exception) {
                 println("RESPONSE $e error in delete timesheet")

@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import uk.co.timesheets24.app.TS24.GlobalLookUp
+import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.UI.theme.TS24Theme
 import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
 import kotlin.collections.get
@@ -92,7 +93,7 @@ fun RecentEntriesScreen() {
 
     LaunchedEffect(Unit) {
         if (!viewModel.recentEntriesList.isNotEmpty() && !viewModel.loading.value) {
-            viewModel.fetchRecentEntries(context)
+            viewModel.fetchRecentEntries(context, LocalUserDatabase.getInstance(context.applicationContext))
         }
     }
 
@@ -261,7 +262,7 @@ fun RecentEntriesScreen() {
                                                     Text("Confirm")
                                                 }
                                                 Button(onClick = {
-                                                    viewModel.fetchRecentEntries(context)
+                                                    viewModel.fetchRecentEntries(context, LocalUserDatabase.getInstance(context.applicationContext))
                                                 }) {
                                                     Text("Cancel")
                                                 }

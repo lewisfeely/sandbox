@@ -19,10 +19,10 @@ import java.util.Locale
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
-class RefreshLocalData (private val context: Context) : IRefreshLocalData {
+class RefreshLocalData (private val context: Context, private val localDBConnection: LocalUserDatabase = LocalUserDatabase.getInstance(context.applicationContext)
+) : IRefreshLocalData {
 
 
-    private val localDBConnection = LocalUserDatabase.getInstance(context.applicationContext)
     private val convertService = ConvertToLocalData();
 
     val profileApi = ProfileApiClass(context).profile
@@ -69,8 +69,9 @@ class RefreshLocalData (private val context: Context) : IRefreshLocalData {
 
     suspend fun refreshToken() : Boolean {
         val tokenTable = localDBConnection.accessTokenDao()
-        val createdDate = tokenTable.fetch().timeCreated
-        if (isOverAnHourOld(createdDate.toString())) {
+        val createdDate = tokenTable.fetch()
+        val date = createdDate.timeCreated
+        if (isOverAnHourOld(date.toString())) {
             try {
                 val authApi = AuthApiClass(context).authApi
                 val response = authApi.refreshToken(RefreshTokenRemote("refresh_token", GlobalLookUp.refresh_token.toString()))

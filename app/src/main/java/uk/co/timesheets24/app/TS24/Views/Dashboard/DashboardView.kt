@@ -46,7 +46,8 @@ fun DashboardScreen() {
     val theme = MaterialTheme.colors
 
     LaunchedEffect(Unit) {
-        viewModel.syncData(context, lifecycleOwner)
+        viewModel.lifecycleOwner.value = lifecycleOwner
+        viewModel.syncData(context)
     }
 
     Column(

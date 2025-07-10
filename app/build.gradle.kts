@@ -43,25 +43,25 @@ android {
         }
         debug {
 
-            buildConfigField("String", "AUTH_BASE_URL", "\"https://portal.timesheets24.co.uk/api/auth/\"")
-            buildConfigField("String", "ACCOUNT_URL", "\"https://portal.timesheets24.co.uk/api/account/\"")
-            buildConfigField("String", "PROFILE_URL", "\"https://portal.timesheets24.co.uk/api/profile/\"")
-            buildConfigField("String", "BASE_URL", "\"https://portal.timesheets24.co.uk/api/auth/\"")
-            buildConfigField("String", "CLIENT_URL", "\"https://portal.timesheets24.co.uk/api/clients/\"")
-            buildConfigField("String", "ACCOUNTMI_URL", "\"https://portal.timesheets24.co.uk/api/accountmi/\"")
-            buildConfigField("String", "ADMIN_URL", "\"https://portal.timesheets24.co.uk/api/admin/\"")
-            buildConfigField("String", "FILES_URL", "\"https://portal.timesheets24.co.uk/api/files/\"")
-            buildConfigField("String", "JOBS_URL", "\"https://portal.timesheets24.co.uk/api/jobs/\"")
-//
-//            buildConfigField("String", "BASE_URL", "\"https://10.0.2.2/\"")
-//            buildConfigField("String", "AUTH_BASE_URL", "\"https://10.0.2.2:44306/\"")
-//            buildConfigField("String", "PROFILE_URL", "\"https://10.0.2.2:44310/\"")
-//            buildConfigField("String", "ACCOUNT_URL", "\"https://10.0.2.2:44303/\"")
-//            buildConfigField("String", "CLIENT_URL", "\"https://10.0.2.2:44304/\"")
-//            buildConfigField("String", "ACCOUNTMI_URL", "\"https://10.0.2.2:44305/\"")
-//            buildConfigField("String", "ADMIN_URL", "\"https://10.0.2.2:44307/\"")
-//            buildConfigField("String", "FILES_URL", "\"https://10.0.2.2:44308/\"")
-//            buildConfigField("String", "JOBS_URL", "\"https://10.0.2.2:44309/\"")
+//            buildConfigField("String", "AUTH_BASE_URL", "\"https://portal.timesheets24.co.uk/api/auth/\"")
+//            buildConfigField("String", "ACCOUNT_URL", "\"https://portal.timesheets24.co.uk/api/account/\"")
+//            buildConfigField("String", "PROFILE_URL", "\"https://portal.timesheets24.co.uk/api/profile/\"")
+//            buildConfigField("String", "BASE_URL", "\"https://portal.timesheets24.co.uk/api/auth/\"")
+//            buildConfigField("String", "CLIENT_URL", "\"https://portal.timesheets24.co.uk/api/clients/\"")
+//            buildConfigField("String", "ACCOUNTMI_URL", "\"https://portal.timesheets24.co.uk/api/accountmi/\"")
+//            buildConfigField("String", "ADMIN_URL", "\"https://portal.timesheets24.co.uk/api/admin/\"")
+//            buildConfigField("String", "FILES_URL", "\"https://portal.timesheets24.co.uk/api/files/\"")
+//            buildConfigField("String", "JOBS_URL", "\"https://portal.timesheets24.co.uk/api/jobs/\"")
+
+            buildConfigField("String", "BASE_URL", "\"https://10.0.2.2/\"")
+            buildConfigField("String", "AUTH_BASE_URL", "\"https://10.0.2.2:44306/\"")
+            buildConfigField("String", "PROFILE_URL", "\"https://10.0.2.2:44310/\"")
+            buildConfigField("String", "ACCOUNT_URL", "\"https://10.0.2.2:44303/\"")
+            buildConfigField("String", "CLIENT_URL", "\"https://10.0.2.2:44304/\"")
+            buildConfigField("String", "ACCOUNTMI_URL", "\"https://10.0.2.2:44305/\"")
+            buildConfigField("String", "ADMIN_URL", "\"https://10.0.2.2:44307/\"")
+            buildConfigField("String", "FILES_URL", "\"https://10.0.2.2:44308/\"")
+            buildConfigField("String", "JOBS_URL", "\"https://10.0.2.2:44309/\"")
         }
     }
     compileOptions {
@@ -102,7 +102,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.retrofit)
-    implementation(libs.converter.gson) // For JSON parsing
+    implementation(libs.converter.gson) 
     implementation(libs.okhttp)
     implementation(libs.androidx.work.runtime.ktx.v281)
     implementation(libs.retrofit)
@@ -117,5 +117,6 @@ dependencies {
     implementation(libs.maps.compose)
     implementation("androidx.compose.material:material:1.6.1")
     implementation("com.google.accompanist:accompanist-insets:0.30.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
 }

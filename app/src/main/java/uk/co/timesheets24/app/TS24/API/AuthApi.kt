@@ -40,6 +40,5 @@ class AuthApiClass(context: Context) {
             @Body refresh : RefreshTokenRemote
         ): AuthResponse
 
-
     }
 }
