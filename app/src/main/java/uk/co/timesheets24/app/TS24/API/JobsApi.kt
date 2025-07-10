@@ -11,6 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import uk.co.timesheets24.app.TS24.BuildConfig
 import uk.co.timesheets24.app.TS24.GlobalLookUp
+import uk.co.timesheets24.app.TS24.Models.CreateJob
 import uk.co.timesheets24.app.TS24.Models.EditingTimeSheet
 import uk.co.timesheets24.app.TS24.Models.ReceivedTimeSheet
 import uk.co.timesheets24.app.TS24.Models.RemoteData.JobTimeStatusRemote
@@ -71,6 +72,11 @@ class JobsApiClass(context: Context) {
         @GET("jobtimestatus")
         suspend fun getJobTimeStatus(@Header("Authorization") token: String) : List<JobTimeStatusRemote>
 
+        @POST("new")
+        suspend fun postJob(
+            @Header("Authorization") token: String,
+            @Body body: CreateJob
+        )
 
     }
 }

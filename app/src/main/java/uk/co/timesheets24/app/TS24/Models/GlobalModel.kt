@@ -89,3 +89,56 @@ data class UserDetails (
     val status: String?,
     val setUpCompleted: Boolean
 )
+
+data class CreateJob(
+    val clientId : String,
+    val siteId : String,
+    val clientContactID : String,
+    val description : String,
+    val poNumber : String,
+    val jobDate : String,
+    val note : String,
+    val quoteRef : String,
+    val isQuote : Boolean,
+)
+
+data class Client(
+    val clientId : String,
+    val clientName : String
+)
+
+data class Search(
+    val clientName : String
+)
+
+data class ClientDetails(
+    val clientId : String,
+    val clientName : String,
+    val clientTypeId : String,
+    val clientTypeDescription : String,
+    val clientNumber : String,
+    val addresses : List<Address>,
+    val contacts : List<Contact>
+)
+
+data class Address (
+    val address1 : String,
+    val address2 : String,
+    val address3 : String,
+    val address4 : String,
+    val postcode : String,
+    val addressId : String
+)
+
+data class Contact (
+    val contactID : String,
+    val title : String,
+    val firstName : String,
+    val lastName: String,
+    val greetingName: String,
+    val emailAddress: String,
+    val mobile : String,
+    val contactType: String,
+    val contactTypeID : String,
+    val telephone: String
+)

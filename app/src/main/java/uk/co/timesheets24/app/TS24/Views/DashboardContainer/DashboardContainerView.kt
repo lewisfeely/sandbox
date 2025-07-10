@@ -65,6 +65,8 @@ import uk.co.timesheets24.app.TS24.R
 import uk.co.timesheets24.app.TS24.UI.theme.TS24Theme
 import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
 import uk.co.timesheets24.app.TS24.Views.Dashboard.DashboardScreen
+import uk.co.timesheets24.app.TS24.Views.Jobs.SelectJobScreen
+import uk.co.timesheets24.app.TS24.Views.Jobs.SelectJobView
 import uk.co.timesheets24.app.TS24.Views.RecentEntries.RecentEntriesScreen
 
 class DashboardView : ComponentActivity() {
@@ -97,12 +99,12 @@ enum class HomeTabs (
         "timesheets",
         content = { RecentEntriesScreen() },
     ),
-//    Jobs(
-//        "\uf03a",
-//        "\uf03a",
-//        "Jobs",
-//        content = { SelectJobScreen(true, null) },
-//    ),
+    Jobs(
+        "\uf03a",
+        "\uf03a",
+        "Jobs",
+        content = { SelectJobScreen(true, null) },
+    ),
     Settings(
         "\uf013",
         "\uf013",

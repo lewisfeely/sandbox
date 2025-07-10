@@ -86,58 +86,63 @@ class EditRecentEntryView : ComponentActivity() {
 @Composable
 fun EditRecentEntryScreen(context: Context, viewModel: EditRecentEntriesViewModel) {
     val scrollState = rememberScrollState()
-    val finishDatePickerDialog = DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            viewModel.finishCalendar.set(Calendar.YEAR, year)
-            viewModel.finishCalendar.set(Calendar.MONTH, month)
-            viewModel.finishCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            // After date is selected, show time picker
-            TimePickerDialog(
-                context,
-                { _, hour, minute ->
-                    viewModel.finishCalendar.set(Calendar.HOUR_OF_DAY, hour)
-                    viewModel.finishCalendar.set(Calendar.MINUTE, minute)
-                    viewModel.endTime.value = viewModel.dateFormat.format(viewModel.finishCalendar.time)
-                },
-                viewModel.finishCalendar.get(Calendar.HOUR_OF_DAY),
-                viewModel.finishCalendar.get(Calendar.MINUTE),
-                true
-            ).show()
-        },
-        viewModel.finishCalendar.get(Calendar.YEAR),
-        viewModel.finishCalendar.get(Calendar.MONTH),
-        viewModel.finishCalendar.get(Calendar.DAY_OF_MONTH)
-    )
-    val startDatePickerDialog = DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            viewModel.startCalendar.set(Calendar.YEAR, year)
-            viewModel.startCalendar.set(Calendar.MONTH, month)
-            viewModel.startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-            // After date is selected, show time picker
-            TimePickerDialog(
-                context,
-                { _, hour, minute ->
-                    viewModel.startCalendar.set(Calendar.HOUR_OF_DAY, hour)
-                    viewModel.startCalendar.set(Calendar.MINUTE, minute)
-                    viewModel.startTime.value = viewModel.dateFormat.format(viewModel.startCalendar.time)
-                },
-                viewModel.startCalendar.get(Calendar.HOUR_OF_DAY),
-                viewModel.startCalendar.get(Calendar.MINUTE),
-                true
-            ).show()
-        },
-        viewModel.startCalendar.get(Calendar.YEAR),
-        viewModel.startCalendar.get(Calendar.MONTH),
-        viewModel.startCalendar.get(Calendar.DAY_OF_MONTH)
-    )
-
-    if (viewModel.loading.value) {
-        CircularProgressIndicator(color = Color.White)
+    if (viewModel.loading.value || viewModel.startTime.value == "") {
+        Column (modifier = Modifier.fillMaxSize().background(color = TSDarkBlue), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+            CircularProgressIndicator(color = Color.White)
+            Text("fetching info...", color = Color.White)
+        }
     } else {
+
+        val finishDatePickerDialog = DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                viewModel.finishCalendar.set(Calendar.YEAR, year)
+                viewModel.finishCalendar.set(Calendar.MONTH, month)
+                viewModel.finishCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                // After date is selected, show time picker
+                TimePickerDialog(
+                    context,
+                    { _, hour, minute ->
+                        viewModel.finishCalendar.set(Calendar.HOUR_OF_DAY, hour)
+                        viewModel.finishCalendar.set(Calendar.MINUTE, minute)
+                        viewModel.endTime.value = viewModel.dateFormat.format(viewModel.finishCalendar.time)
+                    },
+                    viewModel.finishCalendar.get(Calendar.HOUR_OF_DAY),
+                    viewModel.finishCalendar.get(Calendar.MINUTE),
+                    true
+                ).show()
+            },
+            viewModel.finishCalendar.get(Calendar.YEAR),
+            viewModel.finishCalendar.get(Calendar.MONTH),
+            viewModel.finishCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+        val startDatePickerDialog = DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                viewModel.startCalendar.set(Calendar.YEAR, year)
+                viewModel.startCalendar.set(Calendar.MONTH, month)
+                viewModel.startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                // After date is selected, show time picker
+                TimePickerDialog(
+                    context,
+                    { _, hour, minute ->
+                        viewModel.startCalendar.set(Calendar.HOUR_OF_DAY, hour)
+                        viewModel.startCalendar.set(Calendar.MINUTE, minute)
+                        viewModel.startTime.value = viewModel.dateFormat.format(viewModel.startCalendar.time)
+                    },
+                    viewModel.startCalendar.get(Calendar.HOUR_OF_DAY),
+                    viewModel.startCalendar.get(Calendar.MINUTE),
+                    true
+                ).show()
+            },
+            viewModel.startCalendar.get(Calendar.YEAR),
+            viewModel.startCalendar.get(Calendar.MONTH),
+            viewModel.startCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+
 
     Column(
         Modifier.fillMaxWidth().height(1400.dp).background(TSDarkBlue).verticalScroll(scrollState),
