@@ -14,7 +14,7 @@ import uk.co.timesheets24.app.TS24.Models.RemoteData.LiveJobRemote
 class ClientApiClass(context : Context) {
     val retrofitClients: Retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.CLIENT_URL)
-        .client(if(BuildConfig.AUTH_BASE_URL.contains("10.0.2.2")) GlobalLookUp.getUnsafeOkHttpClient(context) else GlobalLookUp.getSafeOkHttpClient())
+        .client(if(BuildConfig.AUTH_BASE_URL.contains("10.0.2.2")) GlobalLookUp.getUnsafeOkHttpClient() else GlobalLookUp.getSafeOkHttpClient())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

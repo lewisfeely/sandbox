@@ -26,7 +26,7 @@ class JobsApiClass(context: Context) {
         .baseUrl(BuildConfig.JOBS_URL)
         .client(
             if (BuildConfig.AUTH_BASE_URL.contains("10.0.2.2")) GlobalLookUp.getUnsafeOkHttpClient(
-                context
+
             ) else GlobalLookUp.getSafeOkHttpClient()
         )
         .addConverterFactory(GsonConverterFactory.create())

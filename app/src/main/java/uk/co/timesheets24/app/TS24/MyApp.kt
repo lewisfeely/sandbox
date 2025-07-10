@@ -14,7 +14,9 @@ import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
 import uk.co.timesheets24.app.TS24.UI.theme.TSSecondary
 import java.security.KeyStore
 import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 import kotlin.apply
@@ -32,35 +34,32 @@ object GlobalLookUp {
     var refresh_token : String? = null
     var recentEntries : List<RecentEntryRemote>? = null
 
-    fun getUnsafeOkHttpClient(context: Context): OkHttpClient {
-        val certificateFactory = CertificateFactory.getInstance("X.509")
+    fun getUnsafeOkHttpClient(): OkHttpClient {
+        //set self sign certificate
+        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+            override fun checkClientTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {}
 
-        val inputStream =
-            context.resources.openRawResource(R.raw.certificate)
-        val certificate = certificateFactory.generateCertificate(inputStream)
-        inputStream.close()
+            override fun checkServerTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {}
 
-        val keyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply {
-            load(null, null)
-            setCertificateEntry("ssl", certificate)
-        }
+            override fun getAcceptedIssuers() = arrayOf<X509Certificate>()
+        })
 
-        val trustManagerFactory = TrustManagerFactory.getInstance(
-            TrustManagerFactory.getDefaultAlgorithm()
-        ).apply {
-            init(keyStore)
-        }
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, java.security.SecureRandom())
 
-        val trustManager = trustManagerFactory.trustManagers
-            .first { it is X509TrustManager } as X509TrustManager
+// Create an ssl socket factory with our all-trusting manager
+        val sslSocketFactory = sslContext.socketFactory
 
-        val sslContext = SSLContext.getInstance("TLS")
-        sslContext.init(null, arrayOf(trustManager), null)
-
+// connect to server
         return OkHttpClient.Builder()
-            .sslSocketFactory(sslContext.socketFactory, trustManager)
-            .hostnameVerifier { hostname, _ -> hostname == "10.0.2.2" }
-            .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS))
+            .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+            .hostnameVerifier{ _, _ -> true }
             .build()
 
 

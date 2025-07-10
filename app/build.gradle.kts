@@ -43,16 +43,6 @@ android {
         }
         debug {
 
-//            buildConfigField("String", "AUTH_BASE_URL", "\"https://portal.timesheets24.co.uk/api/auth/\"")
-//            buildConfigField("String", "ACCOUNT_URL", "\"https://portal.timesheets24.co.uk/api/account/\"")
-//            buildConfigField("String", "PROFILE_URL", "\"https://portal.timesheets24.co.uk/api/profile/\"")
-//            buildConfigField("String", "BASE_URL", "\"https://portal.timesheets24.co.uk/api/auth/\"")
-//            buildConfigField("String", "CLIENT_URL", "\"https://portal.timesheets24.co.uk/api/clients/\"")
-//            buildConfigField("String", "ACCOUNTMI_URL", "\"https://portal.timesheets24.co.uk/api/accountmi/\"")
-//            buildConfigField("String", "ADMIN_URL", "\"https://portal.timesheets24.co.uk/api/admin/\"")
-//            buildConfigField("String", "FILES_URL", "\"https://portal.timesheets24.co.uk/api/files/\"")
-//            buildConfigField("String", "JOBS_URL", "\"https://portal.timesheets24.co.uk/api/jobs/\"")
-
             buildConfigField("String", "BASE_URL", "\"https://10.0.2.2/\"")
             buildConfigField("String", "AUTH_BASE_URL", "\"https://10.0.2.2:44306/\"")
             buildConfigField("String", "PROFILE_URL", "\"https://10.0.2.2:44310/\"")
