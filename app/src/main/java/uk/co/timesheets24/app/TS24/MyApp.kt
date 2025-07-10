@@ -27,6 +27,7 @@ object GlobalLookUp {
     var selectedTab : Int = 0
     var offlineTimeSheetId : Int = 0
     var userState : ProfileRemote? = null
+    lateinit var timeId : String
     var token : String? = null
     var refresh_token : String? = null
     var recentEntries : List<RecentEntryRemote>? = null

@@ -29,6 +29,7 @@ import uk.co.timesheets24.app.TS24.Models.EditingTimeSheet
 import uk.co.timesheets24.app.TS24.Models.LocalData.RecentEntryLocal
 import uk.co.timesheets24.app.TS24.Models.RemoteData.RecentEntryRemote
 import uk.co.timesheets24.app.TS24.R
+import uk.co.timesheets24.app.TS24.Views.EditRecentEntry.EditRecentEntryView
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -59,13 +60,13 @@ class RecentEntriesViewModel : ViewModel() {
     }
 
     fun viewTimeSheet(context: Context, recentEntry : RecentEntryLocal) {
-        val timesheetApi = JobsApiClass(context).jobs
 
         viewModelScope.launch {
             try {
-                val timesheet = timesheetApi.getRecentEntry("Bearer ${GlobalLookUp.token}", recentEntry.timeId)
+                GlobalLookUp.timeId = recentEntry.timeId
+                val intent = Intent(context, EditRecentEntryView::class.java)
+                context.startActivity(intent)
                 // navigate to edit time sheets page here and pass the timeid or temp id if offline and make the entries list globally accessable
-//                val intent = Intent(context, )
 
             } catch (e : Exception) {
 
