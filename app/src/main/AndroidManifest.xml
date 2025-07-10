@@ -38,6 +38,15 @@
             android:name="uk.co.timesheets24.app.TS24.Views.Jobs.SelectJobView"
             android:exported="false"
             android:theme="@style/Base.Theme.TS24"/>
+        <activity
+            android:name="uk.co.timesheets24.app.TS24.Views.CreateJob.CreateJobView"
+            android:exported="false"
+            android:theme="@style/Base.Theme.TS24"/>
+        <activity
+            android:name="uk.co.timesheets24.app.TS24.Views.CreateTimesheet.LogTimesheetView"
+            android:exported="false"
+            android:theme="@style/Base.Theme.TS24"/>
+
 
 
 

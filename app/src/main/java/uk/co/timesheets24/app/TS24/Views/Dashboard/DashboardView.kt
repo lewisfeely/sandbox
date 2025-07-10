@@ -34,6 +34,7 @@ import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.PieChartData.Slice
 import com.github.tehras.charts.piechart.animation.simpleChartAnimation
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
+import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,8 +47,7 @@ fun DashboardScreen() {
     val theme = MaterialTheme.colors
 
     LaunchedEffect(Unit) {
-        viewModel.lifecycleOwner.value = lifecycleOwner
-        viewModel.syncData(context)
+        viewModel.fetchJobDetails(context, LocalUserDatabase.getInstance(context.applicationContext))
     }
 
     Column(

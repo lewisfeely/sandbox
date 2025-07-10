@@ -207,17 +207,20 @@ fun RecentEntriesScreen() {
                                                 Text(
                                                     "duration : ${recentEntry.timetake / 60} hrs",
                                                     fontSize = 10.sp,
-                                                    modifier = Modifier.height(16.dp)
+                                                    modifier = Modifier.height(16.dp),
+                                                    color = Color.White
                                                 )
                                                 Text(
                                                     "travel : ${recentEntry.travellingTime / 60} hrs",
                                                     fontSize = 10.sp,
-                                                    modifier = Modifier.height(16.dp)
+                                                    modifier = Modifier.height(16.dp),
+                                                    color = Color.White
                                                 )
                                                 Text(
                                                     "over time : ${recentEntry.overTime / 60}hrs ",
                                                     fontSize = 10.sp,
-                                                    modifier = Modifier.height(16.dp)
+                                                    modifier = Modifier.height(16.dp),
+                                                    color = Color.White
                                                 )
                                             }
                                         }

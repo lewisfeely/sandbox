@@ -19,6 +19,7 @@ import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.LocalDataBase.LocalUserDatabase
 import uk.co.timesheets24.app.TS24.Models.ClientDetails
 import uk.co.timesheets24.app.TS24.Models.CreateJob
+import uk.co.timesheets24.app.TS24.Views.DashboardContainer.DashboardView
 import java.util.Calendar
 import kotlin.collections.forEach
 import kotlin.collections.isNotEmpty
@@ -44,15 +45,26 @@ class CreateJobViewModel : ViewModel() {
 
     val loading = mutableStateOf(true)
 
-    fun createJob(job : CreateJob, context : Context) {
+    fun createJob(context : Context) {
         val jobDao = LocalUserDatabase.getInstance(context.applicationContext).jobDao()
         val jobApi = JobsApiClass(context).jobs
 
         viewModelScope.launch {
             try {
-//                jobApi.postJob("Bearer ${GlobalLookUp.token}", CreateJob)
-
-
+                val job = CreateJob(
+                    clientId = selected.value?.clientId.toString(),
+                    siteId = "",
+                    clientContactID = selected.value?.clientNumber.toString(),
+                    description = description.value,
+                    poNumber = "",
+                    jobDate = selectedDate.value,
+                    note = notes.value,
+                    quoteRef = quoteRef.value,
+                    isQuote = isQuote.value
+                )
+                jobApi.postJob("Bearer ${GlobalLookUp.token}", job)
+                val intent = Intent(context, DashboardView::class.java)
+                context.startActivity(intent)
             } catch (e : Exception) {
                 println("RESPONSE $e")
                 loading.value = false

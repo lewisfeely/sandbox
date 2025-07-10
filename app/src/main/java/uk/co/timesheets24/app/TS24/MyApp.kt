@@ -35,7 +35,6 @@ object GlobalLookUp {
     var recentEntries : List<RecentEntryRemote>? = null
 
     fun getUnsafeOkHttpClient(): OkHttpClient {
-        //set self sign certificate
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
             override fun checkClientTrusted(
                 chain: Array<out X509Certificate>?,
@@ -53,10 +52,8 @@ object GlobalLookUp {
         val sslContext = SSLContext.getInstance("SSL")
         sslContext.init(null, trustAllCerts, java.security.SecureRandom())
 
-// Create an ssl socket factory with our all-trusting manager
         val sslSocketFactory = sslContext.socketFactory
 
-// connect to server
         return OkHttpClient.Builder()
             .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
             .hostnameVerifier{ _, _ -> true }

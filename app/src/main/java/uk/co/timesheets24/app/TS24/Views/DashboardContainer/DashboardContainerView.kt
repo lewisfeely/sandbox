@@ -1,6 +1,7 @@
 package uk.co.timesheets24.app.TS24.Views.DashboardContainer
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -64,6 +65,8 @@ import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.R
 import uk.co.timesheets24.app.TS24.UI.theme.TS24Theme
 import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
+import uk.co.timesheets24.app.TS24.Views.CreateJob.CreateJobView
+import uk.co.timesheets24.app.TS24.Views.CreateTimesheet.LogTimesheetView
 import uk.co.timesheets24.app.TS24.Views.Dashboard.DashboardScreen
 import uk.co.timesheets24.app.TS24.Views.Jobs.SelectJobScreen
 import uk.co.timesheets24.app.TS24.Views.Jobs.SelectJobView
@@ -127,6 +130,10 @@ fun DashBoardNav() {
     }
     val lifecycleOwner : LifecycleOwner = LocalLifecycleOwner.current
 
+    LaunchedEffect(Unit) {
+        viewModel.syncData(context, lifecycleOwner)
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -160,10 +167,6 @@ fun DashBoardNav() {
 
 
                             if (GlobalLookUp.hasInternetAccess(context)) {
-                                if (viewModel.loading.value) {
-                                    CircularProgressIndicator(color = MaterialTheme.colors.onPrimary)
-                                    Text(viewModel.state.value, color = MaterialTheme.colors.onPrimary)
-                                } else {
                                     IconButton(
                                         onClick = {
                                             viewModel.syncData(context, lifecycleOwner)
@@ -177,7 +180,6 @@ fun DashBoardNav() {
                                             fontFamily = viewModel.fontAwesomeSolid,
                                         )
                                     }
-                                }
                             }
                         }
                     },
@@ -243,7 +245,12 @@ fun DashBoardNav() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    HomeTabs.entries[selectedTabIndex.value].content()
+                    if (viewModel.loading.value) {
+                        CircularProgressIndicator()
+                        Text(viewModel.state.value, color = Color.White)
+                    } else {
+                        HomeTabs.entries[selectedTabIndex.value].content()
+                    }
                 }
                 if (viewModel.navigationPopUp.value) {
                     ModalBottomSheet(
@@ -264,8 +271,8 @@ fun DashBoardNav() {
                                             color = Color(0XFF1e293b),
                                             shape = RoundedCornerShape(16.dp)
                                         ).clip(RoundedCornerShape(16.dp)).clickable {
-//                                            val intent = Intent(context, CreateJobView::class.java)
-//                                            context.startActivity(intent)
+                                            val intent = Intent(context, CreateJobView::class.java)
+                                            context.startActivity(intent)
                                         }) {
                                         Column(
                                             Modifier.fillMaxSize(),
@@ -284,8 +291,8 @@ fun DashBoardNav() {
                                 }
                                 Box(
                                     Modifier.size(180.dp).background(color = Color(0XFF1e293b), shape = RoundedCornerShape(16.dp)).clip(RoundedCornerShape(16.dp)).clickable{
-//                                        val intent = Intent(context, LogTimesheetView::class.java)
-//                                        context.startActivity(intent)
+                                        val intent = Intent(context, LogTimesheetView::class.java)
+                                        context.startActivity(intent)
                                     }
                                 ) {
                                     Column(

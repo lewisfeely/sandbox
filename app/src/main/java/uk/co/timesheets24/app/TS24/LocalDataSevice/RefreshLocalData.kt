@@ -152,6 +152,7 @@ class RefreshLocalData (private val context: Context, private val localDBConnect
 
     suspend fun RefreshUser(): Boolean {
         val profileData = profileApi.details("Bearer ${GlobalLookUp.token}")
+        GlobalLookUp.contactId = profileData.id
         val profileDao = localDBConnection.profileDao()
         profileDao.insert(convertService.convertToLocalProfile(profileData))
         if (profileDao.fetch().id == profileData.id){

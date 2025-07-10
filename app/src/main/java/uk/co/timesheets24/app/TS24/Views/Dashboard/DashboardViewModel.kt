@@ -40,35 +40,35 @@ class DashboardViewModel : ViewModel() {
             try {
                 loading.value = true
                 _userHours.value = dashboardDao.fetch()
-                println("${userHours.value}")
+                loading.value = false
             } catch (e : Exception) {
                 println("RESPONSE $e inside dashboard details fetch")
             }
         }
     }
 
-    fun syncData(context : Context) {
-        viewModelScope.launch {
-            try {
-                val authApi = AuthApiClass(context).authApi
-                val board = RefreshLocalData(context)
-                board.refreshDescription.observe(lifecycleOwner.value!!) {newValue ->
-                    state.value = newValue
-                }
-                val response = authApi.authentication("mike.feely@outlook.com", "London2016#")
-                GlobalLookUp.token = response.access_token
-                board.DoWork()
-                fetchJobDetails(context, LocalUserDatabase.getInstance(context.applicationContext))
-                loading.value = false
-
-            } catch (e: Exception) {
-                println("RESPONSE $e Inside Login ViewModel")
-                error.value = true
-                loading.value = false
-
-            }
-        }
-    }
+//    fun syncData(context : Context) {
+//        viewModelScope.launch {
+//            try {
+//                val authApi = AuthApiClass(context).authApi
+//                val board = RefreshLocalData(context)
+//                board.refreshDescription.observe(lifecycleOwner.value!!) {newValue ->
+//                    state.value = newValue
+//                }
+//                val response = authApi.authentication("mike.feely@outlook.com", "London2016#")
+//                GlobalLookUp.token = response.access_token
+//                board.DoWork()
+//                fetchJobDetails(context, LocalUserDatabase.getInstance(context.applicationContext))
+//                loading.value = false
+//
+//            } catch (e: Exception) {
+//                println("RESPONSE $e Inside Login ViewModel")
+//                error.value = true
+//                loading.value = false
+//
+//            }
+//        }
+//    }
 
     fun convertMinutesToHoursAndMinutes(totalMinutes: Int?): String {
         val hours = totalMinutes?.div(60)

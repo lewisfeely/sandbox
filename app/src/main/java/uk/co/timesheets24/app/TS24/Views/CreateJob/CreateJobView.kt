@@ -252,6 +252,8 @@ fun CreateJobScreen(context: Context, viewModel : CreateJobViewModel) {
 //            } else if (selectedDate.value == "") {
 //                dateSelected = false
 //            }
+
+            viewModel.createJob(context)
         }) {
             Text("create job")
         }
