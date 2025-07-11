@@ -92,7 +92,7 @@ fun RecentEntriesScreen() {
     val viewModel: RecentEntriesViewModel = viewModel()
 
     LaunchedEffect(Unit) {
-        if (!viewModel.recentEntriesList.isNotEmpty() && !viewModel.loading.value) {
+        if (!viewModel.loading.value) {
             viewModel.fetchRecentEntries(context, LocalUserDatabase.getInstance(context.applicationContext))
         }
     }

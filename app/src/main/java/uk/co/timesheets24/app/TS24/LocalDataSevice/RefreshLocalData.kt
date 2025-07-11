@@ -14,6 +14,7 @@ import uk.co.timesheets24.app.TS24.Models.DashboardRequest
 import uk.co.timesheets24.app.TS24.Models.LocalData.AccessTokenLocal
 import uk.co.timesheets24.app.TS24.Models.RemoteData.RefreshTokenRemote
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -71,7 +72,7 @@ class RefreshLocalData (private val context: Context, private val localDBConnect
         val tokenTable = localDBConnection.accessTokenDao()
         val createdDate = tokenTable.fetch()
         val date = createdDate.timeCreated
-        if (isOverAnHourOld(date.toString())) {
+        if (isOverAnHourOldAndToday(date.toString())) {
             try {
                 val authApi = AuthApiClass(context).authApi
                 val response = authApi.refreshToken(RefreshTokenRemote("refresh_token", GlobalLookUp.refresh_token.toString()))
@@ -175,18 +176,24 @@ class RefreshLocalData (private val context: Context, private val localDBConnect
         return false;
     }
 
-    fun isOverAnHourOld(dateString: String): Boolean {
+    fun isOverAnHourOldAndToday(dateString: String): Boolean {
         return try {
             val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            format.timeZone = TimeZone.getDefault() // optional; use UTC if needed
+            format.timeZone = TimeZone.getDefault()
 
-            val inputDate = format.parse(dateString)
+            val inputDate = format.parse(dateString) ?: return false
             val currentDate = Date()
+
+            val calInput = Calendar.getInstance().apply { time = inputDate }
+            val calCurrent = Calendar.getInstance().apply { time = currentDate }
+
+            val sameDay = calInput.get(Calendar.YEAR) == calCurrent.get(Calendar.YEAR) &&
+                    calInput.get(Calendar.DAY_OF_YEAR) == calCurrent.get(Calendar.DAY_OF_YEAR)
 
             val differenceInMillis = currentDate.time - inputDate.time
             val differenceInHours = TimeUnit.MILLISECONDS.toHours(differenceInMillis)
 
-            differenceInHours >= 1
+            sameDay && differenceInHours >= 1
         } catch (e: Exception) {
             e.printStackTrace()
             false

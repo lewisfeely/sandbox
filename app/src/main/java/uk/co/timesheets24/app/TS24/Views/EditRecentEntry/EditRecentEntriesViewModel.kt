@@ -46,8 +46,8 @@ class EditRecentEntriesViewModel : ViewModel() {
     val startTime = mutableStateOf("")
     val endTime = mutableStateOf("")
     val materials = mutableStateOf("")
-    val overTime = mutableStateOf("0")
-    val travelTime = mutableStateOf("0")
+    val overTime = mutableStateOf("")
+    val travelTime = mutableStateOf("")
 
     val startTimeEntered = mutableStateOf(false)
     val endTimeEntered = mutableStateOf(false)

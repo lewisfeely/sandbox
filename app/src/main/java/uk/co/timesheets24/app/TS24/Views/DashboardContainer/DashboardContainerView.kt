@@ -55,11 +55,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.github.tehras.charts.piechart.PieChart
-import com.github.tehras.charts.piechart.PieChartData
-import com.github.tehras.charts.piechart.PieChartData.Slice
-import com.github.tehras.charts.piechart.animation.simpleChartAnimation
-import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import kotlinx.coroutines.launch
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.R

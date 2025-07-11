@@ -54,9 +54,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.UI.theme.TS24Theme
 import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
 import uk.co.timesheets24.app.TS24.R
+import uk.co.timesheets24.app.TS24.Views.DashboardContainer.DashboardView
 import uk.co.timesheets24.app.TS24.Views.Jobs.SelectJobView
 import java.io.File
 import java.text.SimpleDateFormat
@@ -204,13 +206,15 @@ fun CreateTimesheetScreen(context: Context, viewModel: CreateTimesheetViewModel)
                 }.background(MaterialTheme.colorScheme.background)
                     .border(width = 1.dp, color = Color.White), contentAlignment = Alignment.Center
             ) {
-//                Text(if (jobPosting.value == null) {
-//                    "post without Job"
-//                } else {
-//                    "${jobPosting.value?.description} for ${jobPosting.value?.clientName}"
-//                       }, color = Color.White)
-//            }
+                Text(
+                    if (GlobalLookUp.selectedJob == null) {
+                        "post without Job"
+                    } else {
+                        "${GlobalLookUp.selectedJob?.description} for ${GlobalLookUp.selectedJob?.clientName}"
+                    }, color = Color.White
+                )
             }
+        }
 
             Spacer(Modifier.height(15.dp))
 
@@ -370,14 +374,13 @@ fun CreateTimesheetScreen(context: Context, viewModel: CreateTimesheetViewModel)
             }
             Button(
                 onClick = {
-//                AppState.currentJob = null
-//                val intent = Intent(context, AuthenticatedUserView::class.java)
-//                context.startActivity(intent)
+                GlobalLookUp.selectedJob = null
+                val intent = Intent(context, DashboardView::class.java)
+                context.startActivity(intent)
                 },
             ) {
                 Text("cancel Log")
             }
-        }
     }
 }
 

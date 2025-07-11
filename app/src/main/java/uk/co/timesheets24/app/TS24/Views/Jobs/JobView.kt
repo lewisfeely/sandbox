@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import uk.co.timesheets24.app.TS24.GlobalLookUp
 import uk.co.timesheets24.app.TS24.UI.theme.TS24Theme
 import uk.co.timesheets24.app.TS24.UI.theme.TSDarkBlue
+import uk.co.timesheets24.app.TS24.Views.CreateTimesheet.LogTimesheetView
 import uk.co.timesheets24.app.TS24.Views.DashboardContainer.DashboardView
 import kotlin.collections.isNotEmpty
 import kotlin.jvm.java
@@ -44,9 +45,9 @@ class SelectJobView : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val edit = intent.getStringExtra("editing")
+            val edit = true
             TS24Theme {
-                SelectJobScreen(false, edit)
+                SelectJobScreen(false, "true")
             }
         }
     }
@@ -75,11 +76,11 @@ fun SelectJobScreen(viewing : Boolean, editing : String?) {
                         .fillMaxWidth()
                         .height(100.dp)
                         .clickable(onClick = {
-//                            if (!viewing || editing != null) {
-//                                GlobalLookUp.currentJob = null
-//                                val intent = Intent(context, LogTimesheetView::class.java)
-//                                context.startActivity(intent)
-//                            }
+                            if (!viewing || editing != null) {
+                                GlobalLookUp.selectedJob = null
+                                val intent = Intent(context, LogTimesheetView::class.java)
+                                context.startActivity(intent)
+                            }
                         }),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
@@ -116,11 +117,11 @@ fun SelectJobScreen(viewing : Boolean, editing : String?) {
                             .fillMaxWidth()
                             .height(100.dp)
                             .clickable(onClick = {
-//                                if (!viewing || editing != null) {
-//                                    AppState.currentJob = viewModel.liveJobsList[liveJob]
-//                                    val intent = Intent(context, LogTimesheetView::class.java)
-//                                    context.startActivity(intent)
-//                                }
+                                if (!viewing || editing != null) {
+                                    GlobalLookUp.selectedJob = viewModel.liveJobsList[liveJob]
+                                    val intent = Intent(context, LogTimesheetView::class.java)
+                                    context.startActivity(intent)
+                                }
                             }),
                         verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.Start

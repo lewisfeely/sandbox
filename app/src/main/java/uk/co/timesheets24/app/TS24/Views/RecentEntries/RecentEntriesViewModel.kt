@@ -66,8 +66,6 @@ class RecentEntriesViewModel : ViewModel() {
                 GlobalLookUp.timeId = recentEntry.timeId
                 val intent = Intent(context, EditRecentEntryView::class.java)
                 context.startActivity(intent)
-                // navigate to edit time sheets page here and pass the timeid or temp id if offline and make the entries list globally accessable
-
             } catch (e : Exception) {
 
                 println("RESPONSE $e failed inside view timesheet")

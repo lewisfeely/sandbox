@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import androidx.compose.ui.graphics.Color
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
+import uk.co.timesheets24.app.TS24.Models.LocalData.LiveJobLocal
 import uk.co.timesheets24.app.TS24.Models.RemoteData.PermissionRemote
 import uk.co.timesheets24.app.TS24.Models.RemoteData.ProfileRemote
 import uk.co.timesheets24.app.TS24.Models.RemoteData.RecentEntryRemote
@@ -33,6 +34,7 @@ object GlobalLookUp {
     var token : String? = null
     var refresh_token : String? = null
     var recentEntries : List<RecentEntryRemote>? = null
+    var selectedJob : LiveJobLocal? = null
 
     fun getUnsafeOkHttpClient(): OkHttpClient {
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
@@ -83,6 +85,7 @@ object GlobalLookUp {
     val onSecondary = Color.White
     val onTertiary = Color.White
     val error = Color.Red
+
 
 
 //    val fileSend = files.sendFile("Bearer ${AppState.token}", prepareFilePart(AppState.imageFile!!))

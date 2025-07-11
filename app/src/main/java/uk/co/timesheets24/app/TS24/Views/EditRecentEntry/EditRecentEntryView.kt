@@ -197,14 +197,27 @@ fun EditRecentEntryScreen(context: Context, viewModel: EditRecentEntriesViewMode
                     pieChartData = PieChartData(
                         listOf(
                             Slice(
-                                viewModel.overTime.value.toFloat(),
+                                if (viewModel.overTime.value != "") {
+                                viewModel.overTime.value.toFloat()
+                                } else {
+                                    0f
+                                }
+                                ,
                                 Color(0XFFb33715)
                             ), Slice(
-                                viewModel.travelTime.value.toFloat(),
+                                if (viewModel.travelTime.value != "") {
+                                    viewModel.travelTime.value.toFloat()
+                                } else {
+                                    0f
+                                },
                                 Color(0XFF67c26e)
                             ),
                             Slice(
-                                viewModel.timeTaken.value.toFloat(),
+                                if (viewModel.timeTaken.value != "") {
+                                    viewModel.timeTaken.value.toFloat()
+                                } else {
+                                    0f
+                                },
                                 Color(0XFF7f8ddb)
                             )
                         )
